@@ -2,33 +2,33 @@
 
 In your application.coffee
 
-//=require 'monster-mithril'
+    //=require 'monster-mithril'
 
 ### ApiBase (api.coffee)
 
 Allows you to define routes similar to rails.
 
-$service 'Api', class extends ApiBase
-  namespace: 'api'
-  projects; {}
-  users:
-    member:
-      entry: 'get'
-    collection:
-      activity: 'get'
+    $service 'Api', class extends ApiBase
+      namespace: 'api'
+      projects; {}
+      users:
+        member:
+          entry: 'get'
+        collection:
+          activity: 'get'
 
 Makes it easy to call these routes:
 
-@Api.projects.index()
-@Api.users.show(@model)
-@Api.users.entry(@model)
-@Api.users.activity()
+    @Api.projects.index()
+    @Api.users.show(@model)
+    @Api.users.entry(@model)
+    @Api.users.activity()
 
 ### MithrilJs Helpers (monster.coffee)
 
-$controller
-$service
-$filter
+    $controller
+    $service
+    $filter
 
 ### Javascript Classes
 
