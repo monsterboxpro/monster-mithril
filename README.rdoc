@@ -34,8 +34,8 @@ Makes it easy to call these routes:
 
 Javascript classes that make common life easier.
 
-List  - Handle lists eg. indexes
-Show  - Handles show eg. indiviual members
-Popup - Handles popups
-Form  - Handles forms
+* List  - Handle lists eg. indexes
+* Show  - Handles show eg. indiviual members
+* Popup - Handles popups
+* Form  - Handles forms
 
