@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
   s.description = 'A specical flavour of mithril, to make isomorphic mithril apps in Rails'
   s.license     = "MIT"
 
-  s.files = Dir["{lib}/**/*", "MIT-LICENSE", "Rakefile", "README.rdoc"]
+  s.files = Dir["{app lib}/**/*", "MIT-LICENSE", "Rakefile", "README.rdoc"]
   s.test_files = Dir["test/**/*"]
 
   s.add_dependency "rails", "~> 4.1.5"

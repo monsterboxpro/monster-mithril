@@ -1,23 +1,23 @@
 module MonsterMithril
   class Renderer
+    attr_accessor :js
     def initialize scp, data, param={}
-      @initial_data = { logged_in: logged_in? }
       collect_js
-      preload_init
       preload_data data
       preload_param param
+      self.js << "return render(app.#{scp.sub(/\//,'.')}.view(new app.#{scp.sub(/\//,'.')}.controller))"
+    end
 
-      @_isomorph << "return render(app.#{scp.sub(/\//,'.')}.view(new app.#{scp.sub(/\//,'.')}.controller))"
-      #puts "[mithril] ".red +  @_isomorph
+    def to_s
       html = nil
-      html = ::ExecJS.exec @_isomorph
-      @_isomorph = html.html_safe
+      html = ::ExecJS.exec self.js
+      html.html_safe
     end
 
     def require_tree name
       tree  = Dir.glob(Rails.root.join('app','assets','javascripts',name,'**','*').to_s)
       tree.each do |file|
-        @_isomorph << render_coffee(file) if file.match(/coffee$/)
+        self.js << render_coffee(file) if file.match(/coffee$/)
       end
     end
 
@@ -25,49 +25,48 @@ module MonsterMithril
       lib  = Rails.root.join('app','assets','javascripts').to_s
       files = [files] if files.is_a?(String)
       files.each do |l|
-        n = l.match(/coffee$/) ? render_coffee(lib+"/#{l}") :  IO.read(lib+"/#{l}")
-        @_isomorph << n
+        p = l[0] == '/' ? '' : lib+'/'
+        n = l.match(/coffee$/) ? render_coffee("#{p}#{l}") :  IO.read("#{p}#{l}")
+        self.js << n
       end
     end
 
     def preload_data data
-      @_isomorph << "app.preload = {};"
+      self.js << "app.preload = {};"
       if data
         data.each do |key,json|
-          @_isomorph << "app.preload['#{key}'] = #{json};"
+          self.js << "app.preload['#{key}'] = #{json};"
         end
       end
     end
 
     def preload_param param
-      @_isomorph << "app.param = {};"
+      self.js << "app.param = {};"
       param.each do |key,val|
         n = val.nil? ? 'null' : "'#{val}'"
-        @_isomorph << "app.param['#{key}'] = #{n};"
+        self.js << "app.param['#{key}'] = #{n};"
       end
-    end
-
-    def preload_init
-      @_isomorph << "var _initial_data = #{@initial_data.to_json};"
     end
 
     def collect_js
       iso = Rails.cache.fetch('iso_data')
       if iso
-        @_isomorph = iso
+        self.js = iso
       else
-        @_isomorph = 'var window = {};'
-        requires %w{lib/isostrap.coffee}
-        requires self.config.requires_before
-        requires %w{
-          lib/mithril.js
-          lib/mithril-monster.coffee
-          lib/mithril-render.js
-        }
-        requires requires self.config.requires_after
-        require_tree 'helpers'
-        require_tree 'controllers'
-        Rails.cache.write 'iso_data', @_isomorph
+        self.js = 'var window = {};'
+        requires [MonsterMithril.js_root('isostrap.coffee')]
+        requires MonsterMithril.config.requires_before
+        requires [
+          MonsterMithril.js_root('mithril.js'),
+          MonsterMithril.js_root('api_base.coffee'),
+          MonsterMithril.js_root('monster.coffee'),
+          MonsterMithril.js_root('render.js')
+         ]
+        requires requires MonsterMithril.config.requires_after
+        MonsterMithril.config.requires_tree.each do |tree|
+          require_tree tree
+        end
+        Rails.cache.write 'iso_data', self.js
       end
     end
 
@@ -79,6 +78,4 @@ module MonsterMithril
       template.render
     end
   end
-
 end
-

@@ -1,8 +1,8 @@
 module MonsterMithril
   module ControllerMethods
     def mithril scp, data, param={}
-      MonsterMithril::Renderer.new scp, data, params
-      render 'pages/home'
+      @_isomorph = MonsterMithril::Renderer.new scp, data, params
+      render MonsterMithril.config.render
     end
   end
 end
