@@ -1,12 +1,19 @@
-= MonsterMithril
+MonsterMithril
+====================
 
+Getting Started
+--------------------
+
+### Configure your application.coffee
 In your application.coffee
 
-    //=require 'monster-mithril'
+    #=require      'monster-mithril'
+    #=require_tree './controllers'
+    #=require_tree './services'
 
-### ApiBase (api.coffee)
+### Create your Api Endpoints (services/api.coffee)
 
-Allows you to define routes similar to rails.
+#### Allows you to define routes similar to rails.
 
     $service 'Api', class extends ApiBase
       namespace: 'api'
@@ -17,7 +24,7 @@ Allows you to define routes similar to rails.
         collection:
           activity: 'get'
 
-Makes it easy to call these routes:
+#### Makes it easy to call these routes:
 
     @Api.projects.index()
     @Api.users.show(@model)
@@ -38,4 +45,3 @@ Javascript classes that make common life easier.
 * Show  - Handles show eg. indiviual members
 * Popup - Handles popups
 * Form  - Handles forms
-
