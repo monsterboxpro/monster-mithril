@@ -49,13 +49,16 @@ so you need to have an Api service defined
 
     $controller 'projects/index', class extends Index
       constructor:->
-        @$ = {}
+        @$ =
+          data: @Api.tasks.index()
 
 #### Views
 
-    $view 'projects/index', (ctrl)->
-      # your usual view code
-      m 'projects', []
+    $view 'projects/index', class
+      els = []
+      for project in @$.data().projects
+        els.push m '.project', project.name
+      m 'projects', els
 
 #### Services
 

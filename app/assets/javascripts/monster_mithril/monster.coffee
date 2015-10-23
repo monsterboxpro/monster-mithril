@@ -4,7 +4,8 @@ if typeof _isomorphic != 'undefined'
       app.param[key]
 
 api_loaded = false
-app        = { services: {}, util: {}, store: {}, preload: {} }
+app = { services: {}, util: {}, store: {}, preload: {} }
+$f = {}
 
 $dom =
   get:(sel)->
@@ -17,6 +18,9 @@ $stop = (e)->
   e.stopPropagation() if e.stopPropagation
   e.cancelBubble = true
   e.returnValue  = false
+
+$filter = (name,definition) ->
+  $f[name] = definition
 
 $service = (name, args..., definition) ->
   super_def = class extends definition
@@ -57,11 +61,17 @@ $controller = (name, args..., definition) ->
     new super_def(arguments).$
   app[names[0]][names[1]].controller = __fun
 
-$view = (name,fun) ->
+$view = (name, definition) ->
   names = name.split '/'
   app[names[0]]           ?= {}
   app[names[0]][names[1]] ?= {}
-  app[names[0]][names[1]].view = fun
+  super_def = class extends definition
+    constructor:(ctrl)->
+      @$ = ctrl
+  __fun = (ctrl)->
+    klass = new super_def(ctrl)
+    klass.render()
+  app[names[0]][names[1]].view = __fun
 
 window.$dom        = $dom
 window.$stop       = $stop
@@ -69,5 +79,7 @@ window.$service    = $service
 window.$comp       = $comp
 window.$controller = $controller
 window.$view       = $view
+window.$filter     = $filter
+window.$f          = $f
 window.app         = app
 window.api_loaded  = api_loaded
