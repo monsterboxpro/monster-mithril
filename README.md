@@ -83,7 +83,6 @@ Javascript classes that make common life easier.
 
 TODO
 --------------------
-* Auto inject $f helper method into $controller and $view
-* Fix issue with pas
+* Fix issue with passing argumetns to controllers
 * Fix issues with $comp to use m.component instead of what its doing
 * Implement Javascript classes
