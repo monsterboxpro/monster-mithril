@@ -32,19 +32,19 @@ module MonsterMithril
     end
 
     def preload_data data
-      self.js << "app.preload = {};"
+      self.js << "_iso_preload = {};\n"
       if data
         data.each do |key,json|
-          self.js << "app.preload['#{key}'] = #{json};"
+          self.js << "_iso_preload['#{key}'] = #{json};\n"
         end
       end
     end
 
     def preload_param param
-      self.js << "app.param = {};"
+      self.js << "_iso_param = {};\n"
       param.each do |key,val|
         n = val.nil? ? 'null' : "'#{val}'"
-        self.js << "app.param['#{key}'] = #{n};"
+        self.js << "_iso_param['#{key}'] = #{n};\n"
       end
     end
 

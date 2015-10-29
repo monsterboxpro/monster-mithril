@@ -16,16 +16,19 @@ In your application.coffee
 
     $service 'Api', class extends ApiBase
       namespace: 'api'
-      projects; {}
-      tasks; 'create destroy'
-      users:
-        member:
-          entry: 'post'
-        collection:
-          activity: 'get'
+      resources
+        projects; {}
+        tasks; 'create destroy'
+        users:
+          member:
+            entry: 'post'
+          collection:
+            activity: 'get'
 
 The Api service is auto injected into all $controllers
 so you need to have an Api service defined
+
+@Api = = new Api()
 
 #### Makes it easy to call these routes:
 

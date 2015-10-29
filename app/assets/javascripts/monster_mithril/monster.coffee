@@ -1,7 +1,7 @@
 if typeof _isomorphic != 'undefined'
   m.route =
     param:(key)->
-      app.param[key]
+      _iso_param[key]
 
 api_loaded = false
 app = { services: {}, util: {}, store: {}, preload: {} }
@@ -68,6 +68,8 @@ $view = (name, definition) ->
   super_def = class extends definition
     constructor:(ctrl)->
       @$ = ctrl
+    param:(name)->
+      m.route.param name
   __fun = (ctrl)->
     klass = new super_def(ctrl)
     klass.render()

@@ -5,7 +5,10 @@ class ApiBase
   _delete:(tn,a,name,data={},success,error)=> @_request tn, a, 'DELETE', name, data, success, error
   _request:(tn,a,kind,url,data,success,error)=> 
     if @preload
-      -> app.preload["#{tn}/#{a}"]
+      ->
+        data = _iso_preload["#{tn}/#{a}"]
+        success(data) if success
+        data
     else
       m.request(method: kind, url: url, data: data, config: @_config).then(success,error)
   _config:(xhr)=> xhr.setRequestHeader 'X-CSRF-Token',  $dom.get("meta[name='csrf-token']")[0].content
