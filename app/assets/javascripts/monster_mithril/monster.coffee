@@ -10,8 +10,16 @@ $f = {}
 $dom =
   get:(sel)->
     document.querySelectorAll(sel)
-  addClass:->
-  removeClass:->
+  addClass:(el,class_name)->
+    if (el.classList)
+      el.classList.add class_name
+    else
+      el.className += ' ' + class_name
+  removeClass:(el,class_name)->
+    if (el.classList)
+      el.classList.remove(class_name)
+    else
+      el.className = el.className.replace(new RegExp('(^|\\b)' + class_name.split(' ').join('|') + '(\\b|$)', 'gi'), ' ')
 
 $stop = (e)->
   e.prevDefault()     if e.prevDefault
