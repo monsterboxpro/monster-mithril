@@ -7,6 +7,9 @@ api_loaded = false
 app = { services: {}, util: {}, store: {}, preload: {} }
 $f = {}
 
+$loc = (n)->
+  document.body.setAttribute('location',n)
+
 $dom =
   get:(sel)->
     document.querySelectorAll(sel)
@@ -84,6 +87,7 @@ $view = (name, definition) ->
   app[names[0]][names[1]].view = __fun
 
 window.$dom        = $dom
+window.$loc        = $loc
 window.$stop       = $stop
 window.$service    = $service
 window.$comp       = $comp
