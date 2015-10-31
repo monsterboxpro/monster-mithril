@@ -1,9 +1,8 @@
 module MonsterMithril
   class Railtie < Rails::Railtie
-    #initializer :monster_mithril do |app|
-      #require 'monster_mithril/rails'
-      #app.config.middleware.insert_after MonsterMithril::Rails
-    #end
+    initializer :monster_mithril do |app|
+      ActionView::Base.send :include, MonsterMithril::HelperMethods
+    end
 
     config.after_initialize do
       ActiveSupport.on_load(:action_controller) do
