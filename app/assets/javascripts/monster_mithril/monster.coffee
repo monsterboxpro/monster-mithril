@@ -45,6 +45,13 @@ $comp = (tag,name,data)->
   #m.component app[names[0]][names[1]], data
   m tag, app[names[0]][names[1]].view(app[names[0]][names[1]].controller(data))
 
+$layout = (ctrl, content, opts={}) =>
+  kind = opts.layout || 'application'
+  data =
+    content: content
+    ctrl: ctrl
+  app.layouts[kind].view data
+
 $controller = (name, args..., definition) ->
   __fun
   names = name.split '/'
@@ -87,6 +94,7 @@ $view = (name, definition) ->
   app[names[0]][names[1]].view = __fun
 
 window.$dom        = $dom
+window.$layout     = $layout
 window.$loc        = $loc
 window.$stop       = $stop
 window.$service    = $service

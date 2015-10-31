@@ -67,6 +67,15 @@ so you need to have an Api service defined
           els.push m '.project', project.name
         m 'projects', els
 
+#### Layouts
+  You can define layouts views in views/layouts/<layout file>.coffee
+  and use the $layout helper.
+
+    $view 'projects/index', class
+      render:=>
+        m '.content', 'this is my content
+        $layout @$, content, layout: 'homepage'
+
 #### Services
 
     $service 'Map', class
