@@ -6,7 +6,7 @@ require "monster_mithril/version"
 # Describe your gem and declare its dependencies:
 Gem::Specification.new do |s|
   s.name        = "monster-mithril"
-  s.version     = MonsterQueries::VERSION
+  s.version     = MonsterMithril::VERSION
   s.authors     = ["Monsterbox Productions"]
   s.email       = ["andrew@monsterboxpro.com"]
   s.homepage    = "http://monsterboxpro.com"

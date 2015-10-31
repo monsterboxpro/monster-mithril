@@ -1,6 +1,7 @@
 module MonsterMithril
   class Railtie < Rails::Railtie
     initializer :monster_mithril do |app|
+        require 'monster_mithril/helper_methods'
       ActionView::Base.send :include, MonsterMithril::HelperMethods
     end
 

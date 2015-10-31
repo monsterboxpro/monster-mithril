@@ -1,9 +1,10 @@
 module MonsterMithril
   class Renderer
     attr_accessor :js
-    def initialize scp, data, param={}
+    def initialize scp, data, param={}, init={}
       collect_js
       preload_data data
+      preload_init init
       preload_param param
       self.js << "return render(app.#{scp.sub(/\//,'.')}.view(new app.#{scp.sub(/\//,'.')}.controller))"
     end
@@ -29,6 +30,10 @@ module MonsterMithril
         n = l.match(/coffee$/) ? render_coffee("#{p}#{l}") :  IO.read("#{p}#{l}")
         self.js << n
       end
+    end
+
+    def preload_init init
+      self.js << "var _init  = #{init.to_json};"
     end
 
     def preload_data data
