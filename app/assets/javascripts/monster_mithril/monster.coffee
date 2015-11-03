@@ -66,6 +66,9 @@ $controller = (name, args..., definition) ->
       @_action     = names[1]
       @Api = new app.services.Api
       super
+    $export: (args...)=>
+      for arg in args
+        @$[arg] = @[arg]
     param:(name)->
       m.route.param name
     store:(val,input)=>
