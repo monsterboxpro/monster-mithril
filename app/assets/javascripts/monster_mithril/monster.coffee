@@ -4,7 +4,7 @@ if typeof _isomorphic != 'undefined'
       _iso_param[key]
 
 api_loaded = false
-app = { services: {}, util: {}, store: {}, preload: {} }
+app = { events: {}, models: {}, services: {}, util: {}, store: {}, preload: {} }
 $f = {}
 
 $loc = (n)->
@@ -33,6 +33,15 @@ $stop = (e)->
 $filter = (name,definition) ->
   $f[name] = definition
 
+$register = (name,fun)->
+  app.events[name] ?= []
+  app.events[name].push fun
+
+$broadcast = (name, data)->
+  if app.events[name]
+    for fun in app.events[name]
+      fun(data) 
+
 $service = (name, args..., definition) ->
   super_def = class extends definition
     constructor:->
@@ -44,6 +53,13 @@ $comp = (tag,name,data)->
   app.store[name] ?= {}
   #m.component app[names[0]][names[1]], data
   m tag, app[names[0]][names[1]].view(app[names[0]][names[1]].controller(data))
+
+$popup = (name,data={})=>
+  names = name.split '/'
+  ctrl    = app[names[0]][names[1]].controller(data)
+  content = app[names[0]][names[1]].view ctrl
+  ctrl.content = content
+  app.layouts.popup.view ctrl
 
 $layout = (ctrl, content, opts={}) =>
   kind = opts.layout || 'application'
@@ -66,9 +82,10 @@ $controller = (name, args..., definition) ->
       @_action     = names[1]
       @Api = new app.services.Api
       super
+    $on: (name,fun)=>
+      $register name, fun
     $export: (args...)=>
-      for arg in args
-        @$[arg] = @[arg]
+      @$[arg] = @[arg] for arg in args
     param:(name)->
       m.route.param name
     store:(val,input)=>
@@ -81,6 +98,36 @@ $controller = (name, args..., definition) ->
   __fun = ->
     new super_def(arguments).$
   app[names[0]][names[1]].controller = __fun
+
+
+$model = (name, definition) ->
+  if definition
+    super_def = class extends definition
+      constructor:->
+        @_init()
+      _init:=>
+        @$ =
+          params: @params
+          reset : @reset
+        @$.id = m.prop(null)
+        for k,v of @columns
+          @$[k] = m.prop(v)
+      params:=>
+        attrs = {}
+        attrs.id = @$.id()
+        for k,v of @columns
+          attrs[k] = @$[k]()
+        attrs
+      reset:=>
+        @$.id(null)
+        for k,v of @columns
+          @$[k](v)
+    __fun = ->
+      new super_def().$
+    app.models[name] = __fun
+  else
+    new app.models[name]()
+
 
 $view = (name, definition) ->
   names = name.split '/'
@@ -96,12 +143,45 @@ $view = (name, definition) ->
     klass.render()
   app[names[0]][names[1]].view = __fun
 
+_ = {}
+_.any = (arr,fun) ->
+  val = false
+  val = true if fun() is true for item in arr
+  val
+_.is_array = (input)->
+  Object::toString.call(input) is '[object Array]'
+_.create = (collection,data)->
+  collection ||= []
+  collection.push data
+  data
+_.update = (collection,data)->
+  model = null
+  for m in collection
+    model = m if data.id is m.id
+  i = collection.indexOf model
+  return null if i is -1
+  collection[i] = data
+  collection[i]
+_.destroy = (collection,data)->
+  model = null
+  for m in collection
+    model = m if data.id is m.id
+  i = collection.indexOf model
+  return null if i is -1
+  collection.splice i, 1
+  model
+
 window.$dom        = $dom
+window._           = _
+window.$broadcast  = $broadcast
+window.$register   = $register
+window.$popup      = $popup
 window.$layout     = $layout
 window.$loc        = $loc
 window.$stop       = $stop
 window.$service    = $service
 window.$comp       = $comp
+window.$model      = $model
 window.$controller = $controller
 window.$view       = $view
 window.$filter     = $filter

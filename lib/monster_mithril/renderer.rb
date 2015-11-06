@@ -65,6 +65,7 @@ module MonsterMithril
           MonsterMithril.js_root('mithril.js'),
           MonsterMithril.js_root('api_base.coffee'),
           MonsterMithril.js_root('monster.coffee'),
+          MonsterMithril.js_root('popup.coffee'),
           MonsterMithril.js_root('render.js')
          ]
         requires requires MonsterMithril.config.requires_after

@@ -4,13 +4,22 @@ class ApiBase
   _put:(   tn,a,name,data={},success,error)=> @_request tn, a, 'PUT'   , name, data, success, error
   _delete:(tn,a,name,data={},success,error)=> @_request tn, a, 'DELETE', name, data, success, error
   _request:(tn,a,kind,url,data,success,error)=> 
+    ev_success = (data)->
+      $broadcast "#{tn}/#{a}", data
+      success(data) if success
+      data
+    ev_error = (data)->
+      $broadcast "#{tn}/#{a}#err", data
+      error(data) if error
+      data
+
     if @preload
       ->
         data = _iso_preload["#{tn}/#{a}"]
         success(data) if success
         data
     else
-      m.request(method: kind, url: url, data: data, config: @_config).then(success,error)
+      m.request(method: kind, url: url, data: data, config: @_config).then(ev_success,error)
   _config:(xhr)=> xhr.setRequestHeader 'X-CSRF-Token',  $dom.get("meta[name='csrf-token']")[0].content
   _extract_id:(model)=>
     if typeof model is 'string' || typeof model is 'number'
