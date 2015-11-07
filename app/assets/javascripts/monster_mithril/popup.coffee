@@ -8,8 +8,7 @@ class Popup
   constructor:(args)->
     name = "#{@_controller}_#{@_action}"
     @$.popup_class = "#{name}_popup"
-    @$.model = args[0][name].model
-    @$.pop   = args[0][name].pop
+    @$[key] = val for key,val of args[0][name]
     @$export 'submit',
              'cancel'
     @_register()

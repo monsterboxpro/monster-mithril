@@ -33,14 +33,14 @@ $stop = (e)->
 $filter = (name,definition) ->
   $f[name] = definition
 
-$register = (name,fun)->
-  app.events[name] ?= []
-  app.events[name].push fun
+$register = (_scope,name,fun)->
+  app.events[name] ?= {}
+  app.events[name][_scope] = fun
 
 $broadcast = (name, data)->
-  if app.events[name]
-    for fun in app.events[name]
-      fun(data) 
+  if name != "" && app.events[name]
+    for key,fun of app.events[name]
+      fun(data) if fun
 
 $service = (name, args..., definition) ->
   super_def = class extends definition
@@ -54,11 +54,12 @@ $comp = (tag,name,data)->
   #m.component app[names[0]][names[1]], data
   m tag, app[names[0]][names[1]].view(app[names[0]][names[1]].controller(data))
 
-$popup = (name,data={})=>
+$popup = (name,data={},opts={})=>
   names = name.split '/'
   ctrl    = app[names[0]][names[1]].controller(data)
   content = app[names[0]][names[1]].view ctrl
   ctrl.content = content
+  ctrl.opts = opts
   app.layouts.popup.view ctrl
 
 $layout = (ctrl, content, opts={}) =>
@@ -78,12 +79,13 @@ $controller = (name, args..., definition) ->
     constructor:->
       @__fun       = __fun
       @$           = {}
+      @_name       = name
       @_controller = names[0]
       @_action     = names[1]
-      @Api = new app.services.Api
+      @Api = new app.services.Api()
       super
     $on: (name,fun)=>
-      $register name, fun
+      $register @_name, name, fun
     $export: (args...)=>
       @$[arg] = @[arg] for arg in args
     param:(name)->

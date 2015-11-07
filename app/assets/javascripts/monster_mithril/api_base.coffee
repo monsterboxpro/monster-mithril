@@ -69,7 +69,7 @@ class ApiBase
       when 'put'     then (model,params,success,error)=> @_put    tn, a, @path(tn, model.id, a), params, success, error
       when 'destroy' then (model,params,success,error)=> @_delete tn, a, @path(tn, model.id, a), params, success, error
     @[tn][a] = fun
-  constructor:->
+  constructor:()->
     @preload =  typeof _isomorphic != 'undefined'
     @_resource table_name, options for table_name,options of @resources
 window.ApiBase = ApiBase
