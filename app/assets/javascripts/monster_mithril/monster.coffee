@@ -128,7 +128,10 @@ $model = (name, definition) ->
       new super_def().$
     app.models[name] = __fun
   else
-    new app.models[name]()
+    if app.models[name]
+      new app.models[name]()
+    else
+      null
 
 
 $view = (name, definition) ->

@@ -7,7 +7,7 @@ module MonsterMithril
     def initialize
       self.requires_before ||= []
       self.requires_after  ||= []
-      self.requires_tree   ||= %w{filters controllers views}
+      self.requires_tree   ||= %w{models filters controllers views}
       self.render          ||= 'pages/home'
     end
   end
