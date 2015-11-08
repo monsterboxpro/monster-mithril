@@ -28,7 +28,7 @@ class Popup
     @$.pop(false)
   submit:(e)=>
     $stop e
-    if @$.model.id()
+    if @$.model && @$.model.id()
       @Api[@_controller].update @$.model.id(), @params()
     else
       @Api[@_controller].create @params()
