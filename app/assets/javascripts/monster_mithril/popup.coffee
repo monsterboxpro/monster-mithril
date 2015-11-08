@@ -22,7 +22,8 @@ class Popup
          if data.model.id
             @Api[@_controller].edit data.model, @attrs()
        else
-         @Api[@_controller][@_action] data.model, @attrs()
+         if @can_pull()
+           @Api[@_controller][@_action] data.model, @attrs()
 
   cancel:=>
     @$.pop(false)
