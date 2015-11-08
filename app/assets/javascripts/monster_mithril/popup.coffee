@@ -9,6 +9,7 @@ class Popup
     name = "#{@_controller}_#{@_action}"
     @$.popup_class = "#{name}_popup"
     @$[key] = val for key,val of args[0][name]
+    @$.data = null
     @$export 'submit',
              'cancel'
     @_register()
@@ -20,7 +21,7 @@ class Popup
           @Api[@_controller].edit data.model, @attrs()
        when 'form'
          if data.model.id
-            @Api[@_controller].edit data.model, @attrs()
+           @Api[@_controller].edit data.model, @attrs()
        else
          if @can_pull()
            @Api[@_controller][@_action] data.model, @attrs()
@@ -35,8 +36,13 @@ class Popup
       @Api[@_controller].create @params()
     return false
   edit_success:(data)=>
-    for k,v of data
-      @$.model[k](v) if @$.model[k]
+    if @$.model
+      for k,v of data
+        @$.model[k](v) if @$.model[k]
+  custom_success:(data)=>
+    if @$.model
+      for k,v of data
+        @$.model[k](v) if @$.model[k]
   success:(data)=>
     @$.pop(false)
   error:(data)=>
@@ -76,6 +82,8 @@ class Popup
         @$on "#{path}/#{@_action}"        , @custom_success
         @$on "#{path}/#{@_action}#success", @success
         @$on "#{path}/#{@_action}#err"    , @err
+        @$on "#{path}/update"             , @success
+        @$on "#{path}/update#err"         , @err
     true
 
 
