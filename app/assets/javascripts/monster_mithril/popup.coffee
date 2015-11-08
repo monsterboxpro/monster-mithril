@@ -18,6 +18,12 @@ class Popup
       when 'edit'
         if @can_pull('edit')
           @Api[@_controller].edit data.model, @attrs()
+       when 'form'
+         if data.model.id
+            @Api[@_controller].edit data.model, @attrs()
+       else
+         @Api[@_controller][@_action] data.model, @attrs()
+
   cancel:=>
     @$.pop(false)
   submit:(e)=>
@@ -28,7 +34,8 @@ class Popup
       @Api[@_controller].create @params()
     return false
   edit_success:(data)=>
-    console.log 'edit success', data
+    for k,v of data
+      @$.model[k](v) if @$.model[k]
   success:(data)=>
     @$.pop(false)
   error:(data)=>
@@ -52,6 +59,14 @@ class Popup
         @$on "#{path}/create"    , @success
         @$on "#{path}/create#err", @err
       when 'edit'
+        @$on "#{path}/update"    , @success
+        @$on "#{path}/destroy"   , @success
+        @$on "#{path}/update#err", @err
+        @$on "#{path}/edit"      , @edit_success if @can_pull('edit')
+      when 'form'
+        @$on "#{path}/new"       , @new_success
+        @$on "#{path}/create"    , @success
+        @$on "#{path}/create#err", @err
         @$on "#{path}/update"    , @success
         @$on "#{path}/destroy"   , @success
         @$on "#{path}/update#err", @err

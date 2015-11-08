@@ -116,7 +116,6 @@ $model = (name, definition) ->
           @$[k] = m.prop(v)
       params:=>
         attrs = {}
-        attrs.id = @$.id()
         for k,v of @columns
           attrs[k] = @$[k]()
         attrs
