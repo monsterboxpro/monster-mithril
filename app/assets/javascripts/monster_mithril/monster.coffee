@@ -1,3 +1,11 @@
+set_args = (args,target,arguments_list) ->
+  for arg_name, i in args
+    if typeof arg_name == 'object'
+      for attr of arg_name
+        target[arg_name[attr]] = arguments_list[i]
+    else
+      target[arg_name] = arguments_list[i]
+
 if typeof _isomorphic != 'undefined'
   m.route =
     param:(key)->
@@ -72,6 +80,7 @@ $layout = (ctrl, content, opts={}) =>
 $controller = (name, args..., definition) ->
   __fun
   names = name.split '/'
+  set_args args, @, arguments
   app.store["#{names[0]}/#{names[1]}"] = {}
   app[names[0]]           ?= {}
   app[names[0]][names[1]] ?= {}
