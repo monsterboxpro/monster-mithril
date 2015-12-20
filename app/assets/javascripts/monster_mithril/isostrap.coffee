@@ -1,5 +1,9 @@
 _isomorphic = true
-window  = {}
+window  =
+  sessionStorage: {}
+navigator =
+  geolocation:
+    getCurrentPosition: ->
 console =
   log: ->
 document =
