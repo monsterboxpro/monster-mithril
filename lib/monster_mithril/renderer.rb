@@ -68,7 +68,7 @@ module MonsterMithril
           MonsterMithril.js_root('popup.coffee'),
           MonsterMithril.js_root('render.js')
          ]
-        requires requires MonsterMithril.config.requires_after
+        requires MonsterMithril.config.requires_after
         MonsterMithril.config.requires_tree.each do |tree|
           require_tree tree
         end

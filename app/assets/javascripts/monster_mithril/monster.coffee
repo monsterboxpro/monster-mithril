@@ -1,10 +1,3 @@
-set_args = (args,target,arguments_list) ->
-  for arg_name, i in args
-    if typeof arg_name == 'object'
-      for attr of arg_name
-        target[arg_name[attr]] = arguments_list[i]
-    else
-      target[arg_name] = arguments_list[i]
 
 if typeof _isomorphic != 'undefined'
   m.route =
@@ -17,6 +10,14 @@ $f = {}
 
 $loc = (n)->
   document.body.setAttribute('location',n)
+
+set_args = (target,args) ->
+  for arg_name in args
+    if typeof arg_name is 'object'
+      for attr of arg_name
+        target[arg_name[attr]] = new app.services[arg_name[attr]]
+    else
+      target[arg_name] = new app.services[arg_name]
 
 $dom =
   get:(sel)->
@@ -80,12 +81,12 @@ $layout = (ctrl, content, opts={}) =>
 $controller = (name, args..., definition) ->
   __fun
   names = name.split '/'
-  set_args args, @, arguments
   app.store["#{names[0]}/#{names[1]}"] = {}
   app[names[0]]           ?= {}
   app[names[0]][names[1]] ?= {}
   super_def = class extends definition
     constructor:->
+      set_args @, args
       @__fun       = __fun
       @$           = {}
       @_name       = name
