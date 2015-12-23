@@ -63,9 +63,26 @@ module MonsterMithril
         requires MonsterMithril.config.requires_before
         requires [
           MonsterMithril.js_root('mithril.js'),
-          MonsterMithril.js_root('api_base.coffee'),
           MonsterMithril.js_root('monster.coffee'),
-          MonsterMithril.js_root('popup.coffee'),
+          #core ---------------------------------------
+          MonsterMithril.js_root('core/api.coffee'),
+          MonsterMithril.js_root('core/comp.coffee'),
+          MonsterMithril.js_root('core/controller.coffee'),
+          MonsterMithril.js_root('core/dom.coffee'),
+          MonsterMithril.js_root('core/events.coffee'),
+          MonsterMithril.js_root('core/filter.coffee'),
+          MonsterMithril.js_root('core/layout.coffee'),
+          MonsterMithril.js_root('core/model.coffee'),
+          MonsterMithril.js_root('core/popup.coffee'),
+          MonsterMithril.js_root('core/service.coffee'),
+          MonsterMithril.js_root('core/util.coffee'),
+          MonsterMithril.js_root('core/view.coffee'),
+          #helpers ------------------------------------
+          MonsterMithril.js_root('helpers/form.coffee'),
+          MonsterMithril.js_root('helpers/list.coffee'),
+          MonsterMithril.js_root('helpers/popup.coffee'),
+          MonsterMithril.js_root('helpers/show.coffee'),
+          #virtual node render ------------------------
           MonsterMithril.js_root('render.js')
          ]
         requires MonsterMithril.config.requires_after

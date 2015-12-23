@@ -73,4 +73,3 @@ class ApiBase
     @preload =  typeof _isomorphic != 'undefined'
     @_resource table_name, options for table_name,options of @resources
 window.ApiBase = ApiBase
-
