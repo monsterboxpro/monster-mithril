@@ -4,4 +4,4 @@ $layout = (ctrl, content, opts={}) =>
     content: content
     ctrl: ctrl
   app.layouts[kind].view data
-window.$layout     = $layout
+module.exports = $layout

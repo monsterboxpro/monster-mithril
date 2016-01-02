@@ -1,0 +1,35 @@
+{
+  "private": true,
+  "engines": {
+    "node": ">=0.12.0"
+  },
+  "devDependencies": {
+    "bower": "latest",
+
+    "browserify": "latest",
+    "browserify-bower": "latest",
+    "coffeeify": "latest",
+    "watchify": "~3.4.0",
+    "node-lessify": "latest",
+
+    "gulp": "~3.9.0",
+    "gulp-jshint": "~1.3.4",
+    "gulp-foreach": "latest",
+    "gulp-livereload": "~0.1.1",
+    "gulp-util": "latest",
+    "gulp-coffee": "latest",
+    "gulp-include": "latest",
+
+    "vinyl-source-stream": "latest",
+    "request": "latest",
+
+    "q": "latest",
+    "del": "latest",
+
+    "tiny-lr": "0.0.5",
+    "connect": "~2.12.0",
+    "connect-livereload": "~0.3.2",
+
+    "node.extend": "latest"
+  }
+}

@@ -27,4 +27,4 @@ $model = (name, definition) ->
       new app.models[name]()
     else
       null
-window.$model      = $model
+module.exports = $model

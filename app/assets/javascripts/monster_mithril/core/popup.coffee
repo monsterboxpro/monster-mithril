@@ -5,4 +5,4 @@ $popup = (name,data={},opts={})=>
   ctrl.content = content
   ctrl.opts = opts
   app.layouts.popup.view ctrl
-window.$popup      = $popup
+module.exports = $popup

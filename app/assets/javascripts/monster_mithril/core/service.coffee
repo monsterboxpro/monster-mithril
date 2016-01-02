@@ -4,4 +4,4 @@ $service = (name, args..., definition) ->
       super
   app.services[name] = super_def
 
-window.$service    = $service
+module.exports = $service

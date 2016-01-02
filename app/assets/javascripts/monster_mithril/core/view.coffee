@@ -11,4 +11,4 @@ $view = (name, definition) ->
     klass = new super_def(ctrl)
     klass.render()
   app[names[0]][names[1]].view = __fun
-window.$view = $view
+module.exports = $view

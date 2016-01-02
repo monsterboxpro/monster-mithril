@@ -39,4 +39,4 @@ $controller = (name, args..., definition) ->
     new super_def(arguments).$
   app[names[0]][names[1]].controller = __fun
 
-window.$controller = $controller
+module.exports = $controller

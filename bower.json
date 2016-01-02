@@ -1,0 +1,28 @@
+{
+  "name": "monster-mithril",
+  "homepage": "https://github.com/sikanrong/monster-mithril",
+  "authors": [
+    "Alex Pilafian <sikanrong@gmail.com>, Andrew Brown <andrew@monsterboxpro.com>"
+  ],
+  "description": "MonsterBoxPro Mithril.js Toolkit",
+  "dependencies": {
+    "underscore": "latest",
+    "mithril": "latest"
+  },
+  "main": "app/dist/monster-mithril-all.js",
+  "moduleType": [
+    "node"
+  ],
+  "keywords": [
+    "mithril",
+    "mithriljs"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

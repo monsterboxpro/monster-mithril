@@ -87,4 +87,4 @@ class Popup
     true
 
 
-window.Popup = Popup
+module.exports = Popup
