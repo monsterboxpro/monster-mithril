@@ -1,18 +1,29 @@
-//= require './monster_mithril/mithril'
-//= require './monster_mithril/monster'
-//= require './monster_mithril/core/api'
-//= require './monster_mithril/core/comp'
-//= require './monster_mithril/core/controller'
-//= require './monster_mithril/core/dom'
-//= require './monster_mithril/core/events'
-//= require './monster_mithril/core/filter'
-//= require './monster_mithril/core/layout'
-//= require './monster_mithril/core/model'
-//= require './monster_mithril/core/popup'
-//= require './monster_mithril/core/service'
-//= require './monster_mithril/core/util'
-//= require './monster_mithril/core/view'
-//= require './monster_mithril/helpers/form'
-//= require './monster_mithril/helpers/list'
-//= require './monster_mithril/helpers/popup'
-//= require './monster_mithril/helpers/show'
+'use strict';
+
+var window = window || {};
+
+//Require external deps
+var _ = window._ = require("underscore");
+var m = window.m = require("mithril");
+
+var $monster = {core: {}, helpers: {}};
+
+$monster.core.ApiBase = require("core/api.coffee");
+$monster.helpers.Popup = require("helpers/popup.coffee");
+
+$monster.$comp = require("core/comp.coffee");
+$monster.$controller = require("core/controller.coffee");
+$monster.$layout = require("core/layout.coffee");
+$monster.$model = require("core/model.coffee");
+$monster.$popup = require("core/popup.coffee");
+$monster.$service = require("core/service.coffee");
+$monster.$view = require("core/view.coffee");
+
+_.extend($monster, require("core/dom.coffee"));
+_.extend($monster, require("core/events.coffee"));
+_.extend($monster, require("core/filter.coffee"));
+
+$monster._ = _;
+$monster.m = m;
+
+module.exports = $monster;

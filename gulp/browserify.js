@@ -17,6 +17,11 @@ var q = require('q');
 //Defaults to 'development'.
 var environment = process.env.NODE_ENV || "production";
 
+var dependencies = [
+    'underscore',
+    'mithril'
+];
+
 var make_bundle = function(opts){
     
     if(opts === undefined){
@@ -75,6 +80,12 @@ var make_bundle = function(opts){
 gulp.task("bsfy-scripts", function(){
     return make_bundle({
         out_file: "monster-mithril-all.js",
-        bsfy_opts: {entries: "bsfy_entry_point.js"}
+        bsfy_opts: {entries: "app/assets/javascripts/monster-mithril.js"}
+    }).on('end', function(){
+      return make_bundle({
+          out_file: "monster-mithril-standalone.js",
+          bsfy_opts: {entries: "app/assets/javascripts/monster-mithril.js"},
+          bsfy_bower_opts: {external: dependencies}
+      });
     });
 });
