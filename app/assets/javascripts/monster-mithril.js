@@ -8,6 +8,8 @@ var m = window.m = require("mithril");
 
 var $monster = {core: {}, helpers: {}};
 
+var app = $monster.$app = require("monster.coffee");
+
 $monster.core.ApiBase = require("core/api.coffee");
 $monster.helpers.Popup = require("helpers/popup.coffee");
 

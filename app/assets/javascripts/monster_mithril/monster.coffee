@@ -15,3 +15,5 @@ app =
 
 window.app         = app
 window.api_loaded  = api_loaded
+
+module.exports = app
