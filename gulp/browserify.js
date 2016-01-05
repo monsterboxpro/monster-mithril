@@ -79,13 +79,7 @@ var make_bundle = function(opts){
 
 gulp.task("bsfy-scripts", function(){
     return make_bundle({
-        out_file: "monster-mithril-all.js",
+        out_file: "monster-mithril-bsfy-all.js",
         bsfy_opts: {entries: "app/assets/javascripts/monster-mithril.js"}
-    }).on('end', function(){
-      return make_bundle({
-          out_file: "monster-mithril-standalone.js",
-          bsfy_opts: {entries: "app/assets/javascripts/monster-mithril.js"},
-          bsfy_bower_opts: {external: dependencies}
-      });
     });
 });

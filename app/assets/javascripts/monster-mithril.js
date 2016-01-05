@@ -28,4 +28,5 @@ _.extend($monster, require("core/filter.coffee"));
 $monster._ = _;
 $monster.m = m;
 
+window.$monster = $monster;
 module.exports = $monster;

@@ -9,7 +9,7 @@
     "underscore": "latest",
     "mithril": "latest"
   },
-  "main": "app/dist/monster-mithril-all.js",
+  "main": "app/assets/javascripts/monster-mithril.js",
   "moduleType": [
     "node"
   ],
