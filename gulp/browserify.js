@@ -44,7 +44,6 @@ var make_bundle = function(opts){
         
     var bsfy_opts_common = {
         debug: true,
-        paths: ["app/assets/javascripts/monster_mithril"],
         extensions: ['.coffee'],
         cache: {},
         packageCache: {}
@@ -80,6 +79,6 @@ var make_bundle = function(opts){
 gulp.task("bsfy-scripts", function(){
     return make_bundle({
         out_file: "monster-mithril-bsfy-all.js",
-        bsfy_opts: {entries: "app/assets/javascripts/monster-mithril.js"}
+        bsfy_opts: {entries: "app/assets/javascripts/monster_mithril/main.js"}
     });
 });
