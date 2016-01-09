@@ -12,6 +12,11 @@ $model = (name, definition) ->
         for k,v of @columns
           val = attrs[k] || v
           @$[k] = m.prop(val)
+
+        if @instance
+          for k, v of @instance
+            @$[k] = v
+
       params:=>
         attrs = {}
         attrs.id = @$.id()
