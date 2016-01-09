@@ -1367,6 +1367,7 @@ var m = (function app(window, undefined) {
 				return xhr.responseText
 			}
 		};
+    var xhr = null;
 		xhrOptions.method = (xhrOptions.method || "GET").toUpperCase();
 		xhrOptions.url = parameterizeUrl(xhrOptions.url, xhrOptions.data);
 		xhrOptions = bindData(xhrOptions, xhrOptions.data, serialize);
@@ -1384,8 +1385,7 @@ var m = (function app(window, undefined) {
 						response = new xhrOptions.type(response);
 					}
 				}
-
-				deferred[e.type === "load" ? "resolve" : "reject"](response);
+				deferred[e.type === "load" ? "resolve" : "reject"](response,e.target.getResponseHeader);
 			} catch (e) {
 				m.deferred.onerror(e);
 				deferred.reject(e);
@@ -1393,8 +1393,7 @@ var m = (function app(window, undefined) {
 
 			if (xhrOptions.background !== true) m.endComputation()
 		}
-
-		ajax(xhrOptions);
+		xhr = ajax(xhrOptions);
 		deferred.promise = propify(deferred.promise, xhrOptions.initialValue);
 		return deferred.promise;
 	};

@@ -1,13 +1,40 @@
+# $controller 'users/show', class extends Popup
+#   pull: true
+#
+# $controller 'users/form', class extends Popup
+#   pull: ['edit']
+#
+# $controller 'users/show', class extends Popup
+#   attrs:=>
+#     { student_id: @$stateParams.id }
+#
+# $controller 'users/form', class extends Popup
+#   title:
+#     new: 'Add a user'
+#     edit: 'Update a user'
+
+# $controller 'users/form', class extends Popup
+#   save_label:
+#     new: 'Add'
+#     edit: 'Update User'
+#
+
 class Popup
   pull: false
   params:=>
     attrs = {}
-    attrs["#{@_controller}"] = @$.model.params()
+    attrs[@_controller.singularize()] = @$.model.params()
     attrs
   attrs:=> {}
   constructor:(args)->
     name = "#{@_controller}_#{@_action}"
     @$.popup_class = "#{name}_popup"
+    unless args[0][name]
+      console.log '[Popup] arguments:', args[0]
+      throw "[Popup][#{@_controller}/#{@_action}] expected #{name} for args" 
+    throw "[Popup][#{@_controller}/#{@_action}] expects model" unless args[0][name].model
+    throw "[Popup][#{@_controller}/#{@_action}] expects pop"   unless args[0][name].pop
+    throw "[Popup][#{@_controller}/#{@_action}] expects title" unless args[0][name].title
     @$[key] = val for key,val of args[0][name]
     @$.data = null
     @$export 'submit',
@@ -15,13 +42,23 @@ class Popup
     @_register()
   pop:(data)=>
     @$.pop(true)
+    @$.title "#{@_action} #{@_controller.singularize()}".titleize()
     switch @_action
       when 'edit'
         if @can_pull('edit')
           @Api[@_controller].edit data.model, @attrs()
        when 'form'
-         if data.model.id
+         if data && data.model && data.model.id
            @Api[@_controller].edit data.model, @attrs()
+           if @title.edit
+              @$.title @title.edit()
+           else
+             @$.title "Edit #{@_controller.singularize()}".titleize()
+         else
+           if @title.new
+            @$.title @title.new()
+           else
+             @$.title "New #{@_controller.singularize()}".titleize()
        else
          if @can_pull()
            @Api[@_controller][@_action] data.model, @attrs()
@@ -30,15 +67,16 @@ class Popup
     @$.pop(false)
   submit:(e)=>
     $stop e
-    if @$.model && @$.model.id()
+    if @_action isnt 'form' && @_action isnt 'new' && @_action isnt 'edit'
+      @Api[@_controller][@_action] {id: @$.model.id()}, @params()
+    else if @$.model && @$.model.id()
       @Api[@_controller].update @$.model.id(), @params()
     else
       @Api[@_controller].create @params()
     return false
   edit_success:(data)=>
     if @$.model
-      for k,v of data
-        @$.model[k](v) if @$.model[k]
+      @$.model.reset data
   custom_success:(data)=>
     if @$.model
       for k,v of data
@@ -77,7 +115,7 @@ class Popup
         @$on "#{path}/update"    , @success
         @$on "#{path}/destroy"   , @success
         @$on "#{path}/update#err", @err
-        @$on "#{path}/edit"      , @edit_success if @can_pull('edit')
+        @$on "#{path}/edit"      , @edit_success
       else
         @$on "#{path}/#{@_action}"        , @custom_success
         @$on "#{path}/#{@_action}#success", @success

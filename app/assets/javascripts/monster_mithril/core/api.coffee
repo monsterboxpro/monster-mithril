@@ -1,3 +1,32 @@
+parameter_name = (root)->
+  name = root[0]
+  name += '['  + root.slice(1).join('][') + ']' if root.length > 1
+  name
+has_attached_file = (value)->
+  result = false
+  if typeof value == 'object' && !(value instanceof File)
+    for own k,v of value
+      result |= has_attached_file v
+  else if typeof value == 'array'
+    for vv in v
+      result |= has_attached_file vv
+  else
+    result |= value instanceof File
+  return result
+
+form_object_to_form_data = (value,fd=null,root=[]) ->
+  fd = new FormData() unless fd
+  if typeof value == 'object' && !(value instanceof File)
+    for own k,v of value
+      form_object_to_form_data v, fd, root.concat [k]
+  else if typeof value == 'array'
+    for i,vv in value
+      form_object_to_form_data vv, fd, root.concat [i]
+  else
+    return if _.last(root)[0] == '$' # Skip angular attributes like $$hashKey
+    fd.append parameter_name(root), value
+  fd
+
 class ApiBase
   _get:(   tn,a,name,data={},success,error)=> @_request tn, a, 'GET'   , name, data, success, error
   _post:(  tn,a,name,data={},success,error)=> @_request tn, a, 'POST'  , name, data, success, error
@@ -14,12 +43,19 @@ class ApiBase
       data
 
     if @preload
+      data = _iso_preload["#{tn}/#{a}"]
+      ev_success(data)
       ->
-        data = _iso_preload["#{tn}/#{a}"]
-        success(data) if success
         data
     else
-      m.request(method: kind, url: url, data: data, config: @_config).then(ev_success,error)
+      #console.log has_attached_file(data), data
+      if has_attached_file(data)
+        form_data = form_object_to_form_data(data)
+        serialize = (value)->
+          return value
+        m.request(method: kind, url: url, data: form_data, serialize: serialize, config: @_config).then(ev_success,error)
+      else
+        m.request(method: kind, url: url, data: data, config: @_config).then(ev_success,error)
   _config:(xhr)=> xhr.setRequestHeader 'X-CSRF-Token',  $dom.get("meta[name='csrf-token']")[0].content
   _extract_id:(model)=>
     if typeof model is 'string' || typeof model is 'number'

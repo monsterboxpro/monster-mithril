@@ -136,7 +136,7 @@ entries/create
 
 #### Popup
     $controller 'entries/form' class extends Popup
-      pull: ['','edit']
+      pull: ['edit']
 
 pull
 attrs - for pull

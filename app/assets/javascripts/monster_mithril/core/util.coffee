@@ -1,8 +1,18 @@
 _ = {}
-_.any = (arr,fun) ->
+_.any = (arr,fun=null) ->
   val = false
-  val = true if fun() is true for item in arr
+  if _.is_array(arr)
+    for item in arr
+      if fun is null
+        val = true if item is true
+      else
+        val = true if fun() is true
   val
+_.find_by_id = (collection,id)->
+  result = null
+  for model in collection
+    result = model if model.id is id
+  result
 _.is_array = (input)->
   Object::toString.call(input) is '[object Array]'
 _.create = (collection,data)->

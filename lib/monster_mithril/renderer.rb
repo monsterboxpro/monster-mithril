@@ -1,8 +1,8 @@
 module MonsterMithril
   class Renderer
     attr_accessor :js
-    def initialize scp, data, param={}, init={}
-      collect_js
+    def initialize nsp, scp, data, param={}, init={}
+      collect_js nsp.to_sym
       preload_data data
       preload_init init
       preload_param param
@@ -53,14 +53,14 @@ module MonsterMithril
       end
     end
 
-    def collect_js
+    def collect_js nsp
       iso = Rails.cache.fetch('iso_data')
       if iso
         self.js = iso
       else
         self.js = 'var window = {};'
         requires [MonsterMithril.js_root('isostrap.coffee')]
-        requires MonsterMithril.config.requires_before
+        requires MonsterMithril.config.namespaces[nsp].requires_before
         requires [
           MonsterMithril.js_root('mithril.js'),
           MonsterMithril.js_root('monster.coffee'),
@@ -85,8 +85,8 @@ module MonsterMithril
           #virtual node render ------------------------
           MonsterMithril.js_root('render.js')
          ]
-        requires MonsterMithril.config.requires_after
-        MonsterMithril.config.requires_tree.each do |tree|
+        requires MonsterMithril.config.namespaces[nsp].requires_after
+        MonsterMithril.config.namespaces[nsp].requires_tree.each do |tree|
           require_tree tree
         end
         Rails.cache.write 'iso_data', self.js

@@ -1,30 +1,34 @@
 $model = (name, definition) ->
-  if definition
+  if typeof(definition) is 'function'
     super_def = class extends definition
-      constructor:->
-        @_init()
-      _init:=>
+      constructor:(attrs={})->
+        @_init(attrs)
+      _init:(attrs)=>
         @$ =
+          _kind: name
           params: @params
           reset : @reset
-        @$.id = m.prop(null)
+        @$.id = m.prop(attrs.id || null)
         for k,v of @columns
-          @$[k] = m.prop(v)
+          val = attrs[k] || v
+          @$[k] = m.prop(val)
       params:=>
         attrs = {}
+        attrs.id = @$.id()
         for k,v of @columns
           attrs[k] = @$[k]()
         attrs
-      reset:=>
-        @$.id(null)
+      reset:(attrs={})=>
+        @$.id(attrs.id || null)
         for k,v of @columns
-          @$[k](v)
-    __fun = ->
-      new super_def().$
+          val = attrs[k] || v
+          @$[k](val)
+    __fun = (attrs)->
+      new super_def(attrs).$
     app.models[name] = __fun
   else
     if app.models[name]
-      new app.models[name]()
+      new app.models[name](definition)
     else
       null
-window.$model      = $model
+window.$model = $model

@@ -4,7 +4,8 @@ if typeof _isomorphic != 'undefined'
       _iso_param[key]
 
 api_loaded = false
-app = 
+$$  = {}
+app =
   events   : {}
   models   : {}
   services : {}
@@ -12,6 +13,6 @@ app =
   store    : {}
   preload  : {}
 
-
+window.$$          = {}
 window.app         = app
 window.api_loaded  = api_loaded

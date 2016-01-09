@@ -9,6 +9,13 @@ $view = (name, definition) ->
       m.route.param name
   __fun = (ctrl)->
     klass = new super_def(ctrl)
-    klass.render()
+    content = klass.render()
+    if klass.layout
+      $loc "#{names[0]}_#{names[1]}"
+      klass.layout = 'application' if klass.layout is true
+      document.title = klass.title() if klass.title
+      $layout klass.$, content, layout: klass.layout
+    else
+      content
   app[names[0]][names[1]].view = __fun
 window.$view = $view
