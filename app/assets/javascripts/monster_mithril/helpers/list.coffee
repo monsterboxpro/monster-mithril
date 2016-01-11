@@ -24,18 +24,22 @@ class List
         new:  @pop_new
         show: @pop_show
         edit: @pop_edit
+    dreindex = debounce @reindex, 100
     if @paginate
+      page = parseInt @param('page')
       @$.paginate =
-        page: $watch m.prop(parseInt(@param('page')) || 1), @reindex
+        page: $watch m.prop(page ||  1), dreindex
+    if @sortable
+      val = @sortable.split(',')
+      @$.sort =
+        name: $watch m.prop(@param('sort') || val[0]), dreindex
+        by:   $watch m.prop(@param('by')   || val[1]), dreindex
+    if @search
+      @$.search = $watch m.prop(@param('q')  || ''), dreindex
     @reindex() if @pull
-    #@$.$watch 'search', _.debounce(@update_search, 500) if @search
     @index_success null, @data() if @data
-    @$export 'sort',
-             'destroy'
+    @$export 'destroy'
     @$.loading = true
-    @$.predicate =
-      name: 'id'
-      dir: 'asc'
   pop_new:=>
     n = "#{@table_name}_form"
     @_check_model n
@@ -65,15 +69,6 @@ class List
     unless @$[name].model
       console.log "[List][#{ctrl}] @$.#{name}", @$[name]
       throw "[List][#{ctrl}] pop action expects a model for #{name} to defined on scope" 
-  sort:(name)=>
-    dir = if @$.predicate.name is name
-      if @$.predicate.dir is 'desc' then 'asc' else 'desc'
-    else
-      'asc'
-    @$.predicate = {name: name, dir: dir}
-    @$location.search 'sort', "#{name},#{dir}"
-    @$.sortable = true
-    @reindex()
   update_search:(val,old)=>
     if old != val
       if @search is 'location'
@@ -87,15 +82,17 @@ class List
       @reindex() if @pull
   reindex:=>
     attrs = @attrs()
-    attrs.page   = @$.paginate.page()       if @$.paginate && @$.paginate.page
-    attrs.search = @$.search                if @search && @$.search
-    attrs.sort   = @$location.search().sort if @$.sortable
+    attrs.page   = @$.paginate.page() if @paginate && @$.paginate && @$.paginate.page
+    attrs.search = @$.search()        if @search   && @$.search
+    attrs.sort   = "#{@$.sort.name()},#{@$.sort.by()}" if @sortable && @$.sort
     @$.loading = true
     @Api[@table_name][@action] attrs
-  destroy:(model)=>
-    name = _.singularize @table_name
+  destroy:(model,opts={})=>
+    name = @table_name.singularize()
     msg  = "Are you sure you wish to destroy this #{name}"
     @Api[@table_name].destroy model, @attrs() if confirm msg
+    if opts.now
+      _.destroy @collection, model
   index_success:(data)=>
     @$.loading = false
     #paginate = headers('X-Pagination')
@@ -109,21 +106,13 @@ class List
   destroy_success:(data)=> _.destroy @collection, data
   _register:=>
     path = @table_name
-    path = [@_prefix(),name].join '/'  if _.any @scope
     @$on "#{path}/#{@action}", @index_success
 
     name = @collection_name || @table_name
     path = name
-    path = [@_prefix(),name].join '/'  if _.any @scope
 
     @$on "#{path}/create" , @create_success
     @$on "#{path}/update" , @update_success
     @$on "#{path}/destroy", @destroy_success
-    #if @pull
-      #@$.$watch 'paginate.page', (new_val,old_val)=>
-        #@reindex() if old_val != undefined && new_val != old_val
-  _prefix:=>
-    path = _.map @scope, (s)=> "#{_.pluralize(s)}/#{@$[s].id}"
-    path.join '/'
 
 window.List = List

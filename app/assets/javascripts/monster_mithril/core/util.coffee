@@ -35,5 +35,7 @@ _.destroy = (collection,data)->
   return null if i is -1
   collection.splice i, 1
   model
+_.last = (arr)->
+  arr[arr.length=1]
 
 window._ = _

@@ -16,14 +16,13 @@ has_attached_file = (value)->
 
 form_object_to_form_data = (value,fd=null,root=[]) ->
   fd = new FormData() unless fd
-  if typeof value == 'object' && !(value instanceof File)
+  if typeof value is 'object' && !(value instanceof File)
     for own k,v of value
       form_object_to_form_data v, fd, root.concat [k]
-  else if typeof value == 'array'
+  else if typeof value is 'array'
     for i,vv in value
       form_object_to_form_data vv, fd, root.concat [i]
   else
-    return if _.last(root)[0] == '$' # Skip angular attributes like $$hashKey
     fd.append parameter_name(root), value
   fd
 

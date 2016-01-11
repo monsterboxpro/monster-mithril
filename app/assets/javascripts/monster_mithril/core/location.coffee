@@ -3,12 +3,9 @@
 $location = ->
   pairs = location.search.slice(1).split('&')
   result = {}
-  pairs.forEach (pair) ->
-    pair = pair.split('=')
-    result[pair[0]] = decodeURIComponent(pair[1] or '')
-    return
-  json = JSON.parse JSON.stringify(result)
-  for k,v in json
-    delete json[k] unless k
+  for pair in pairs
+    p = pair.split('=')
+    result[p[0]] = decodeURIComponent(p[1] or '')
+  result
 
 window.$location = $location

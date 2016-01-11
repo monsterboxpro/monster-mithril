@@ -50,12 +50,12 @@ class Popup
        when 'form'
          if data && data.model && data.model.id
            @Api[@_controller].edit data.model, @attrs()
-           if @title.edit
+           if @title && @title.edit
               @$.title @title.edit()
            else
              @$.title "Edit #{@_controller.singularize()}".titleize()
          else
-           if @title.new
+           if @title && @title.new
             @$.title @title.new()
            else
              @$.title "New #{@_controller.singularize()}".titleize()
