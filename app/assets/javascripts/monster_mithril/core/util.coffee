@@ -1,4 +1,14 @@
 _ = {}
+
+_.extend = (target, source) ->
+  target = target || {}
+  for idx, prop of Object.keys source
+    if (typeof source[prop] == 'object')
+      target[prop] = _.extend(target[prop], source[prop])
+    else
+      target[prop] = source[prop]
+  target
+
 _.any = (arr,fun=null) ->
   val = false
   if _.is_array(arr)
