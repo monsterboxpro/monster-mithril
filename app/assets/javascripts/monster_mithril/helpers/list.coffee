@@ -74,10 +74,10 @@ class List
     $broadcast "#{@table_name}/edit#pop", model: model
   pop_custom:(name)=>
     (model)=>
-      n = "#{@table_name}_#{name}"
+      n = "#{@_controller}_#{name}"
       @_check_model n
       @$[n].model.reset()
-      $broadcast "#{@table_name}/#{name}#pop", model: model
+      $broadcast "#{@_controller}/#{name}#pop", model: model
   _check_model:(name)=>
     ctrl = "#{@_controller}/#{@_action}"
     unless @$[name]
