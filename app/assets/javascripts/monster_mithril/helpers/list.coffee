@@ -1,13 +1,30 @@
+#
+# $controller 'projects/index', class extends List
+# reindex: Api.projects.index
+# events: 'projects/index', 'projects/create'
+#
+#
+# $controller 'projects/users', class extends List'
+# reindex: Api.projects.users
+# events: 'projects/users', 'users/create'
+#
+
+
 class List
   pull    : false
   popups  : false
   paginate: false
   search  : false
-  action  : 'index'
   attrs: => {}
   constructor:->
     @collection = []
-    @table_name = @_controller unless @table_name
+    @action ||= @_action
+    unless @table_name
+      @table_name =
+      if @_action is 'index'
+        @_controller
+      else
+        @_action
     @_register()
     if typeof(@popups) is 'object'
       @$.pop = {}
@@ -86,7 +103,7 @@ class List
     attrs.search = @$.search()        if @search   && @$.search
     attrs.sort   = "#{@$.sort.name()},#{@$.sort.by()}" if @sortable && @$.sort
     @$.loading = true
-    @Api[@table_name][@action] attrs
+    @Api[@_controller][@action] attrs
   destroy:(model,opts={})=>
     name = @table_name.singularize()
     msg  = "Are you sure you wish to destroy this #{name}"
@@ -105,7 +122,7 @@ class List
   update_success:(data)=>  _.update  @collection, data
   destroy_success:(data)=> _.destroy @collection, data
   _register:=>
-    path = @table_name
+    path = @_controller
     @$on "#{path}/#{@action}", @index_success
 
     name = @collection_name || @table_name
