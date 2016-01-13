@@ -107,9 +107,10 @@ class List
   destroy:(model,opts={})=>
     name = @table_name.singularize()
     msg  = "Are you sure you wish to destroy this #{name}"
-    @Api[@table_name].destroy model, @attrs() if confirm msg
-    if opts.now
-      _.destroy @collection, model
+    if confirm msg
+      @Api[@table_name].destroy model, @attrs() 
+      if opts.now
+        _.destroy @collection, model
   index_success:(data)=>
     @$.loading = false
     #paginate = headers('X-Pagination')
