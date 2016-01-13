@@ -18,6 +18,10 @@ $model = (name, definition) ->
           _kind: name
           params: @params
           reset : @reset
+          fill  : (data)=>
+            for k, v of data
+              if @$[k]
+                @$[k](v)
 
         @$.id = m.prop(attrs.id || null)
 
