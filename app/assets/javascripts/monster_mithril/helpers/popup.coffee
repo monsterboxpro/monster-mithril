@@ -49,13 +49,16 @@ class Popup
           @Api[@_controller].edit data.model, @attrs()
        when 'form'
          if data && data.model && data.model.id
-           @Api[@_controller].edit data.model, @attrs()
-           if @title.edit
+           if @can_pull('edit')
+             @Api[@_controller].edit data.model, @attrs()
+           if @title && @title.edit
               @$.title @title.edit()
            else
              @$.title "Edit #{@_controller.singularize()}".titleize()
          else
-           if @title.new
+           if @can_pull('new')
+             @Api[@_controller].new @attrs()
+           if @title && @title.new
             @$.title @title.new()
            else
              @$.title "New #{@_controller.singularize()}".titleize()
@@ -87,7 +90,8 @@ class Popup
     @$.err = data
   can_pull:(name)=>
     if _.is_array @pull
-      _.any @pull, (n)-> n is name
+      _.any @pull, (n)-> 
+        n is name
     else
       @pull
   _register:=>
