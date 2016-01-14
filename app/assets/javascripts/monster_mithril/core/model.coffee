@@ -17,11 +17,8 @@ $model = (name, definition) ->
         @$ =
           _kind: name
           params: @params
-          reset : @reset
-          fill  : (data)=>
-            for k, v of data
-              if @$[k]
-                @$[k](v)
+          reset : @reset,
+          fill  : @reset
 
         @$.id = m.prop(attrs.id || null)
 
