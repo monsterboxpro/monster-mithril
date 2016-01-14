@@ -16,7 +16,6 @@ $model = (name, definition) ->
         if @instance
           for k, v of @instance
             @$[k] = v
-
       params:=>
         attrs = {}
         attrs.id = @$.id()
