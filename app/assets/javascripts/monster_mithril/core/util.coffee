@@ -16,7 +16,7 @@ _.any = (arr,fun=null) ->
       if fun is null
         val = true if item is true
       else
-        val = true if fun() is true
+        val = true if fun(item) is true
   val
 _.find_by_id = (collection,id)->
   result = null
