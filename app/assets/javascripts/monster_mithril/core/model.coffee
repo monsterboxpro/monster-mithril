@@ -32,7 +32,7 @@ $model = (name, definition) ->
 
         if @mixins
           for mixin in @mixins
-            @include mixin
+            @include app.mixins[mixin]
 
       params:=>
         attrs = {}

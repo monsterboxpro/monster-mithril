@@ -72,6 +72,7 @@ module MonsterMithril
           MonsterMithril.js_root('core/events.coffee'),
           MonsterMithril.js_root('core/filter.coffee'),
           MonsterMithril.js_root('core/layout.coffee'),
+          MonsterMithril.js_root('core/mixin.coffee'),
           MonsterMithril.js_root('core/model.coffee'),
           MonsterMithril.js_root('core/popup.coffee'),
           MonsterMithril.js_root('core/service.coffee'),

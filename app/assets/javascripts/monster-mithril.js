@@ -1,5 +1,6 @@
 //= require './monster_mithril/mithril'
 //= require './monster_mithril/monster'
+
 //= require './monster_mithril/core/inflection'
 //= require './monster_mithril/core/api'
 //= require './monster_mithril/core/comp'
@@ -9,6 +10,7 @@
 //= require './monster_mithril/core/filter'
 //= require './monster_mithril/core/layout'
 //= require './monster_mithril/core/location'
+//= require './monster_mithril/core/mixin'
 //= require './monster_mithril/core/model'
 //= require './monster_mithril/core/popup'
 //= require './monster_mithril/core/service'
