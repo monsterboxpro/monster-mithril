@@ -12,6 +12,7 @@ app =
   util     : {}
   store    : {}
   preload  : {}
+  mixins   : {}
 
 window.$$          = {}
 window.app         = app
