@@ -25,9 +25,12 @@ _.find_by_id = (collection,id)->
   result
 _.is_array = (input)->
   Object::toString.call(input) is '[object Array]'
-_.create = (collection,data)->
+_.create = (collection,data,opts={})->
   collection ||= []
-  collection.push data
+  if opts.reverse
+    collection.unshift data
+  else
+    collection.push data
   data
 _.update = (collection,data)->
   model = null
@@ -48,4 +51,5 @@ _.destroy = (collection,data)->
 _.last = (arr)->
   arr[arr.length=1]
 
-window._ = _
+unless window._
+  window._ = _
