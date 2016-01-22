@@ -21,6 +21,7 @@
 
 class Popup
   pull: false
+  blank: false
   params:=>
     attrs = {}
     attrs[@_controller.singularize()] = @$.model.params()
@@ -121,8 +122,7 @@ class Popup
         @$on "#{path}/update#err", @err
         @$on "#{path}/edit"      , @edit_success
       else
-        @$on "#{path}/#{@_action}"        , @custom_success
-        @$on "#{path}/#{@_action}#success", @success
+        @$on "#{path}/#{@_action}"        , @success
         @$on "#{path}/#{@_action}#err"    , @err
         @$on "#{path}/update"             , @success
         @$on "#{path}/update#err"         , @err
