@@ -14,7 +14,7 @@ $dom =
 $loc = (n)->
   document.body.setAttribute('location',n)
 $stop = (e)->
-  e.prevDefault()     if e.prevDefault
+  e.preventDefault() if e.preventDefault
   e.stopPropagation() if e.stopPropagation
   e.cancelBubble = true
   e.returnValue  = false
