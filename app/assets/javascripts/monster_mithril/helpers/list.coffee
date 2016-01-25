@@ -20,7 +20,6 @@ class List
   constructor:->
     @collection = []
     @action ||= @_action
-    console.log @controller
     @controller ||= @_controller
     unless @table_name
       @table_name =
