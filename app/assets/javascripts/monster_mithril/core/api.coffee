@@ -55,7 +55,10 @@ class ApiBase
         m.request(method: kind, url: url, data: form_data, serialize: serialize, config: @_config).then(ev_success,error)
       else
         m.request(method: kind, url: url, data: data, config: @_config).then(ev_success,error)
-  _config:(xhr)=> xhr.setRequestHeader 'X-CSRF-Token',  $monster.$dom.get("meta[name='csrf-token']")[0].content
+  _config:(xhr)=>
+    csrf_el = $monster.$dom.get("meta[name='csrf-token']")[0]
+    if csrf_el
+      xhr.setRequestHeader 'X-CSRF-Token',  csrf_el.content
   _extract_id:(model)=>
     if typeof model is 'string' || typeof model is 'number'
       model
