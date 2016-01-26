@@ -8,4 +8,4 @@ $location = ->
     result[p[0]] = decodeURIComponent(p[1] or '')
   result
 
-window.$location = $location
+module.exports = $location

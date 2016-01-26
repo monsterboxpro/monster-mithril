@@ -4,4 +4,4 @@ $mixin = (name, definition) ->
   else
     app.mixins[name]
 
-window.$mixin = $mixin
+module.exports = $mixin

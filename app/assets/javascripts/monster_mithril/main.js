@@ -17,6 +17,8 @@ $monster.helpers.Show = require("./helpers/show.coffee");
 $monster.helpers.List = require("./helpers/list.coffee");
 $monster.helpers.Form = require("./helpers/form.coffee");
 
+$monster.$mixin = require("./core/mixin.coffee");
+$monster.$location = require("./core/location.coffee");
 $monster.$controller = require("./core/controller.coffee");
 $monster.$layout = require("./core/layout.coffee");
 $monster.$model = require("./core/model.coffee");
