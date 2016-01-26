@@ -21,6 +21,7 @@
 
 class Popup
   pull: false
+  blank: false
   params:=>
     attrs = {}
     attrs[@_controller.singularize()] = @$.model.params()
@@ -106,26 +107,25 @@ class Popup
       when 'new'
         @$on "#{path}/new"       , @new_success
         @$on "#{path}/create"    , @success
-        @$on "#{path}/create#err", @err
+        @$on "#{path}/create#err", @error
       when 'edit'
         @$on "#{path}/update"    , @success
         @$on "#{path}/destroy"   , @success
-        @$on "#{path}/update#err", @err
+        @$on "#{path}/update#err", @error
         @$on "#{path}/edit"      , @edit_success if @can_pull('edit')
       when 'form'
         @$on "#{path}/new"       , @new_success
         @$on "#{path}/create"    , @success
-        @$on "#{path}/create#err", @err
+        @$on "#{path}/create#err", @error
         @$on "#{path}/update"    , @success
         @$on "#{path}/destroy"   , @success
-        @$on "#{path}/update#err", @err
+        @$on "#{path}/update#err", @error
         @$on "#{path}/edit"      , @edit_success
       else
-        @$on "#{path}/#{@_action}"        , @custom_success
-        @$on "#{path}/#{@_action}#success", @success
-        @$on "#{path}/#{@_action}#err"    , @err
+        @$on "#{path}/#{@_action}"        , @success
+        @$on "#{path}/#{@_action}#err"    , @error
         @$on "#{path}/update"             , @success
-        @$on "#{path}/update#err"         , @err
+        @$on "#{path}/update#err"         , @error
     true
 
 

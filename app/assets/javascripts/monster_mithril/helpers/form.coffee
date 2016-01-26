@@ -24,7 +24,8 @@ class Form
              'back',
              'destroy'
     @_register()
-  reset:=>
+    @reindex()
+  reindex:=>
     switch @action
       when 'new'
         @Api[@table_name].new @attrs() if @can_pull('new')
@@ -46,30 +47,30 @@ class Form
       when 'edit'
         @$on "#{@table_name}/edit"      , @edit_success
         @$on "#{@table_name}/update"    , @update_success
-        @$on "#{@table_name}/update#err", @create_failure
+        @$on "#{@table_name}/update#err", @error
         @$on "#{@table_name}/destroy"   , @destroy_success
       when 'new'
         @$on "#{@table_name}/new"       , @new_success
         @$on "#{@table_name}/create"    , @create_success
-        @$on "#{@table_name}/create#err", @create_failure
+        @$on "#{@table_name}/create#err", @error
       else
         @$on "#{@table_name}/#{@action}"        , @custom_success
         @$on "#{@table_name}/#{@action}#success", @success
-        @$on "#{@table_name}/#{@action}#err"    , @err
-  new_success:(e,data)=>
-    @$.model     = data
-    name         = @table_name.singularize()
+        @$on "#{@table_name}/#{@action}#err"    , @error
+  new_success:(data)=>
+    @$.model.reset data
+    name = @table_name.singularize()
     @$.loading = true
-  edit_success:(e,data)=>
-    @$.model     = data
+  edit_success:(data)=>
+    @$.model.reset data
     name         = @table_name.singularize()
     @$.loading = true
   create_success:(e,data)=> @success data
   update_success:(e,data)=>  @success data
   destroy_success:(e,data)=> # define yourself
   success:(data)=> m.route "#{@table_name}/#{data.id}"
-  create_failure:(e,data)=>
-    @$.errors = data
+  error:(data)=>
+    @$.err = data
   custom_success:(e,data)=>
     @$.model = data
   can_pull:(name)=>

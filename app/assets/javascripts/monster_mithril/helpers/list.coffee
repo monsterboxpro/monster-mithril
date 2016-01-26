@@ -15,10 +15,12 @@ class List
   popups  : false
   paginate: false
   search  : false
+  controller: null
   attrs: => {}
   constructor:->
     @collection = []
     @action ||= @_action
+    @controller ||= @_controller
     unless @table_name
       @table_name =
       if @_action is 'index'
@@ -103,12 +105,12 @@ class List
     attrs.search = @$.search()        if @search   && @$.search
     attrs.sort   = "#{@$.sort.name()},#{@$.sort.by()}" if @sortable && @$.sort
     @$.loading = true
-    @Api[@_controller][@action] attrs
+    @Api[@controller][@action] attrs
   destroy:(model,opts={})=>
     name = @table_name.singularize()
     msg  = "Are you sure you wish to destroy this #{name}"
     if confirm msg
-      @Api[@table_name].destroy model, @attrs() 
+      @Api[@controller].destroy model, @attrs() 
       if opts.now
         _.destroy @collection, model
   index_success:(data)=>
@@ -123,7 +125,7 @@ class List
   update_success:(data)=>  _.update  @collection, data
   destroy_success:(data)=> _.destroy @collection, data
   _register:=>
-    path = @_controller
+    path = @controller
     @$on "#{path}/#{@action}", @index_success
 
     name = @collection_name || @table_name

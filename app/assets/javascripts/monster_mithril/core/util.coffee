@@ -1,6 +1,5 @@
-_ = {}
-
-_.extend = (target, source) ->
+util = {}
+util.extend = (target, source) ->
   target = target || {}
   for idx, prop of Object.keys source
     if (typeof source[prop] == 'object')
@@ -9,7 +8,7 @@ _.extend = (target, source) ->
       target[prop] = source[prop]
   target
 
-_.any = (arr,fun=null) ->
+util.any = (arr,fun=null) ->
   val = false
   if _.is_array(arr)
     for item in arr
@@ -18,18 +17,21 @@ _.any = (arr,fun=null) ->
       else
         val = true if fun(item) is true
   val
-_.find_by_id = (collection,id)->
+util.find_by_id = (collection,id)->
   result = null
   for model in collection
     result = model if model.id is id
   result
-_.is_array = (input)->
+util.is_array = (input)->
   Object::toString.call(input) is '[object Array]'
-_.create = (collection,data)->
+util.create = (collection,data,opts={})->
   collection ||= []
-  collection.push data
+  if opts.reverse
+    collection.unshift data
+  else
+    collection.push data
   data
-_.update = (collection,data)->
+util.update = (collection,data)->
   model = null
   for m in collection
     model = m if data.id is m.id
@@ -37,7 +39,7 @@ _.update = (collection,data)->
   return null if i is -1
   collection[i] = data
   collection[i]
-_.destroy = (collection,data)->
+util.destroy = (collection,data)->
   model = null
   for m in collection
     model = m if data.id is m.id
@@ -45,7 +47,16 @@ _.destroy = (collection,data)->
   return null if i is -1
   collection.splice i, 1
   model
-_.last = (arr)->
+util.last = (arr)->
   arr[arr.length=1]
 
-window._ = _
+window._ = {} unless window._
+
+window._.extend     ||= util.extend
+window._.any        ||= util.any
+window._.find_by_id ||= util.find_by_id
+window._.is_array   ||= util.is_array
+window._.last       ||= util.last
+window._.create  = util.create
+window._.update  = util.update
+window._.destroy = util.destroy
