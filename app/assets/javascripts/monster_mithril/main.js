@@ -31,6 +31,10 @@ _.extend($monster, require("./core/dom.coffee"));
 _.extend($monster, require("./core/events.coffee"));
 _.extend($monster, require("./core/filter.coffee"));
 
+//Add all internal $monster keys to the global scope within this library so that internal
+//components can reference things within the monster-mithril library without the namespace.
+_.extend(this, $monster);
+
 $monster._ = _;
 $monster.m = m;
 
