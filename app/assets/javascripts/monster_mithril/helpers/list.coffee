@@ -64,23 +64,23 @@ class List
     n = "#{@table_name}_form"
     @_check_model n
     @$[n].model.reset()
-    $broadcast "#{@table_name}/new#pop"
+    @$broadcast "#{@table_name}/new#pop"
   pop_show:(model)=>
     n = "#{@_controller}_show"
     @_check_model n
     @$[n].model.reset()
-    $broadcast "#{@table_name}/show#pop", model: model
+    @$broadcast "#{@table_name}/show#pop", model: model
   pop_edit:(model)=>
     n = "#{@table_name}_form"
     @_check_model n
     @$[n].model.reset()
-    $broadcast "#{@table_name}/edit#pop", model: model
+    @$broadcast "#{@table_name}/edit#pop", model: model
   pop_custom:(name)=>
     (model)=>
       n = "#{@_controller}_#{name}"
       @_check_model n
       @$[n].model.reset()
-      $broadcast "#{@_controller}/#{name}#pop", model: model
+      @$broadcast "#{@_controller}/#{name}#pop", model: model
   _check_model:(name)=>
     ctrl = "#{@_controller}/#{@_action}"
     unless @$[name]
