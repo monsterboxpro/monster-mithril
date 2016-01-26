@@ -24,7 +24,8 @@ class Form
              'back',
              'destroy'
     @_register()
-  reset:=>
+    @reindex()
+  reindex:=>
     switch @action
       when 'new'
         @Api[@table_name].new @attrs() if @can_pull('new')
@@ -57,11 +58,13 @@ class Form
         @$on "#{@table_name}/#{@action}#success", @success
         @$on "#{@table_name}/#{@action}#err"    , @err
   new_success:(e,data)=>
-    @$.model     = data
+    if @$.model
+      @$.model.reset data
     name         = @table_name.singularize()
     @$.loading = true
   edit_success:(e,data)=>
-    @$.model     = data
+    if @$.model
+      @$.model.reset data
     name         = @table_name.singularize()
     @$.loading = true
   create_success:(e,data)=> @success data
