@@ -53,6 +53,6 @@ $component = (name, args..., definition) ->
     $$[names[0]][names[1]] = __fun
 
 module.exports =
-  comp: $comp,
-  component: $component
+  $comp: $comp,
+  $component: $component
 
