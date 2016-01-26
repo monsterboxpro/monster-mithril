@@ -36,7 +36,7 @@ $controller = (name, args..., definition) ->
       @Api = new app.services.Api()
       super
     $on: (name,fun)=>
-      @$register @_name, name, fun
+      $monster.$register @_name, name, fun
     $export: (args...)=>
       @$[arg] = @[arg] for arg in args
     param:(name)->

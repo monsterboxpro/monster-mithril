@@ -64,23 +64,23 @@ class List
     n = "#{@table_name}_form"
     @_check_model n
     @$[n].model.reset()
-    @$broadcast "#{@table_name}/new#pop"
+    $monster.$register "#{@table_name}/new#pop"
   pop_show:(model)=>
     n = "#{@_controller}_show"
     @_check_model n
     @$[n].model.reset()
-    @$broadcast "#{@table_name}/show#pop", model: model
+    $monster.$register "#{@table_name}/show#pop", model: model
   pop_edit:(model)=>
     n = "#{@table_name}_form"
     @_check_model n
     @$[n].model.reset()
-    @$broadcast "#{@table_name}/edit#pop", model: model
+    $monster.$register "#{@table_name}/edit#pop", model: model
   pop_custom:(name)=>
     (model)=>
       n = "#{@_controller}_#{name}"
       @_check_model n
       @$[n].model.reset()
-      @$broadcast "#{@_controller}/#{name}#pop", model: model
+      $monster.$register "#{@_controller}/#{name}#pop", model: model
   _check_model:(name)=>
     ctrl = "#{@_controller}/#{@_action}"
     unless @$[name]
@@ -93,12 +93,12 @@ class List
     if old != val
       if @search is 'location'
         if val != ''
-          @$location.search 'search', val
+          $monster.$location.search 'search', val
         else
-          @$location.search 'search', null
+          $monster.$location.search 'search', null
       if @$.paginate
         @$.paginate.page 1
-        @$location.search 'page', null
+        $monster.$location.search 'page', null
       @reindex() if @pull
   reindex:=>
     attrs = @attrs()

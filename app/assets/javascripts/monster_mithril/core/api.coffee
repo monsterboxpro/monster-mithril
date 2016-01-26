@@ -33,11 +33,11 @@ class ApiBase
   _delete:(tn,a,name,data={},success,error)=> @_request tn, a, 'DELETE', name, data, success, error
   _request:(tn,a,kind,url,data,success,error)=> 
     ev_success = (data)->
-      @$broadcast "#{tn}/#{a}", data
+      $monster.$register "#{tn}/#{a}", data
       success(data) if success
       data
     ev_error = (data)->
-      @$broadcast "#{tn}/#{a}#err", data
+      $monster.$register "#{tn}/#{a}#err", data
       error(data) if error
       data
 
@@ -55,7 +55,7 @@ class ApiBase
         m.request(method: kind, url: url, data: form_data, serialize: serialize, config: @_config).then(ev_success,error)
       else
         m.request(method: kind, url: url, data: data, config: @_config).then(ev_success,error)
-  _config:(xhr)=> xhr.setRequestHeader 'X-CSRF-Token',  @$dom.get("meta[name='csrf-token']")[0].content
+  _config:(xhr)=> xhr.setRequestHeader 'X-CSRF-Token',  $monster.$dom.get("meta[name='csrf-token']")[0].content
   _extract_id:(model)=>
     if typeof model is 'string' || typeof model is 'number'
       model

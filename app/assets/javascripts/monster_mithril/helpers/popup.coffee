@@ -70,7 +70,7 @@ class Popup
   cancel:=>
     @$.pop(false)
   submit:(e)=>
-    @$stop e
+    $monster.$stop e
     if @_action isnt 'form' && @_action isnt 'new' && @_action isnt 'edit'
       @Api[@_controller][@_action] {id: @$.model.id()}, @params()
     else if @$.model && @$.model.id()

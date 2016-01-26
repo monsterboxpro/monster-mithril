@@ -19,11 +19,11 @@ class Show
     @$.destroy = @destroy
   pop_edit:(model)=>
     @$["#{@table_name}_form"].model.reset id: @param('id')
-    @$broadcast "#{@table_name}/edit#pop", model: model
+    $monster.$register "#{@table_name}/edit#pop", model: model
   pop_custom:(name)=>
     (model)=>
       @$["#{@table_name}_#{name}"].model.reset id: @param('id')
-      @$broadcast "#{@table_name}/#{name}#pop", model: model
+      $monster.$register "#{@table_name}/#{name}#pop", model: model
   _register:=>
     path = @table_name
     @$on "#{path}/show"   , @show_success

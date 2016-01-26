@@ -19,7 +19,7 @@ class Form
       throw "[Form][#{@_controller}/#{@_action}] expects model" unless args[0][name].model
       @$[key] = val for key,val of args[0][name]
     else
-      @$.model = @$model(@_controller.classify())
+      @$.model = $monster.$model(@_controller.classify())
     @$export 'submit',
              'back',
              'destroy'
@@ -34,7 +34,7 @@ class Form
         if @can_pull()
           @Api[@table_name][@action] @param('id'), @attrs()
   submit:(e)=>
-    @$stop e
+    $monster.$stop e
     params = @params()
     switch @action
       when 'new'  then @Api[@table_name].create             params
