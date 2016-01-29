@@ -19,10 +19,10 @@ $stop = (e)->
   e.cancelBubble = true
   e.returnValue  = false
 
-export = {}
+ex = {}
 
-export.$dom  = $dom
-export.$loc  = $loc
-export.$stop = $stop
+ex.$dom  = $dom
+ex.$loc  = $loc
+ex.$stop = $stop
 
-module.exports = export;
+module.exports = ex;

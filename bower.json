@@ -1,10 +1,10 @@
 {
   "name": "monster-mithril",
-  "homepage": "https://github.com/sikanrong/monster-mithril",
+  "homepage": "https://github.com/monsterboxpro/monster-mithril",
   "authors": [
     "Alex Pilafian <sikanrong@gmail.com>, Andrew Brown <andrew@monsterboxpro.com>"
   ],
-  "description": "MonsterBoxPro Mithril.js Toolkit",
+  "description": "Mithril.js Boilerplate code to help structure Mithril.js applications.",
   "dependencies": {
     "underscore": "1.8.3",
     "mithril": "v0.2.1"
