@@ -3,14 +3,14 @@ util.extend = (target, source) ->
   target = target || {}
   for idx, prop of Object.keys source
     if (typeof source[prop] == 'object')
-      target[prop] = _.extend(target[prop], source[prop])
+      target[prop] = util.extend(target[prop], source[prop])
     else
       target[prop] = source[prop]
   target
 
 util.any = (arr,fun=null) ->
   val = false
-  if _.is_array(arr)
+  if util.is_array(arr)
     for item in arr
       if fun is null
         val = true if item is true
@@ -50,7 +50,8 @@ util.destroy = (collection,data)->
 util.last = (arr)->
   arr[arr.length=1]
 
-window._ = {} unless window._
+_ = {} unless window._
+window._ = _
 
 window._.extend     ||= util.extend
 window._.any        ||= util.any
