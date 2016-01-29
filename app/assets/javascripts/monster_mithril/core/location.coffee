@@ -5,7 +5,8 @@ $location = ->
   result = {}
   for pair in pairs
     p = pair.split('=')
-    result[p[0]] = decodeURIComponent(p[1] or '')
+    unless p[0] is ''
+      result[p[0]] = decodeURIComponent(p[1] or '')
   result
 
 module.exports = $location
