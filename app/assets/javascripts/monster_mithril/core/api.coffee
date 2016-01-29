@@ -71,9 +71,9 @@ class ApiBase
     path.push a for a in args
     path = path.join '/'
     if @host
-      "/#{path}"
-    else
       path
+    else
+      "/#{path}"
   _resource:(tn,options)=>
     only = {index: true, new: true, create: true, show: true, edit: true, update: true, destroy: true}
     if typeof options is 'string' 
