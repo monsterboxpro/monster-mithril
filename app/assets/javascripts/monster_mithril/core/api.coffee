@@ -66,10 +66,14 @@ class ApiBase
       model.id
   path:(args...)=>
     path = []
+    path.push @host if @host
     path.push @namespace if @namespace
     path.push a for a in args
     path = path.join '/'
-    "/#{path}"
+    if @host
+      "/#{path}"
+    else
+      path
   _resource:(tn,options)=>
     only = {index: true, new: true, create: true, show: true, edit: true, update: true, destroy: true}
     if typeof options is 'string' 
