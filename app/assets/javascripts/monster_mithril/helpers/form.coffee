@@ -70,7 +70,7 @@ class Form
   destroy_success:(e,data)=> # define yourself
   success:(data)=> m.route "#{@table_name}/#{data.id}"
   error:(data)=>
-    @$.err = data
+    @$.model.errors data
   custom_success:(e,data)=>
     @$.model = data
   can_pull:(name)=>

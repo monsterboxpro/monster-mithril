@@ -52,9 +52,9 @@ class ApiBase
         form_data = form_object_to_form_data(data)
         serialize = (value)->
           return value
-        m.request(method: kind, url: url, data: form_data, serialize: serialize, config: @_config).then(ev_success,error)
+        m.request(method: kind, url: url, data: form_data, serialize: serialize, config: @_config).then(ev_success,ev_error)
       else
-        m.request(method: kind, url: url, data: data, config: @_config).then(ev_success,error)
+        m.request(method: kind, url: url, data: data, config: @_config).then(ev_success,ev_error)
   _config:(xhr)=> xhr.setRequestHeader 'X-CSRF-Token',  $dom.get("meta[name='csrf-token']")[0].content
   _extract_id:(model)=>
     if typeof model is 'string' || typeof model is 'number'
