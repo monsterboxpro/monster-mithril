@@ -42,6 +42,7 @@ class Popup
              'cancel'
     @_register()
   pop:(data)=>
+    @$.model.errors {}
     @$.pop(true)
     @$.title "#{@_action} #{@_controller.singularize()}".titleize()
     switch @_action
@@ -88,7 +89,7 @@ class Popup
   success:(data)=>
     @$.pop(false)
   error:(data)=>
-    @$.err = data
+    @$.model.errors data
   can_pull:(name)=>
     if _.is_array @pull
       _.any @pull, (n)-> 

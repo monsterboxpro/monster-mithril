@@ -17,9 +17,9 @@ $model = (name, definition) ->
         @$ =
           _kind: name
           params: @params
-          reset : @reset,
+          reset : @reset
           fill  : @reset
-
+          errors: m.prop({})
         @$.id = m.prop(attrs.id || null)
 
         for k,v of @columns
@@ -33,7 +33,6 @@ $model = (name, definition) ->
         if @mixins
           for mixin in @mixins
             @include app.mixins[mixin]
-
       params:=>
         attrs = {}
         attrs.id = @$.id()
