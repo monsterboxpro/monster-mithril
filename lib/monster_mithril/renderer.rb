@@ -66,6 +66,7 @@ module MonsterMithril
           MonsterMithril.js_root('monster.coffee'),
           #core ---------------------------------------
           MonsterMithril.js_root('core/api.coffee'),
+          MonsterMithril.js_root('core/storage.coffee'),
           MonsterMithril.js_root('core/comp.coffee'),
           MonsterMithril.js_root('core/controller.coffee'),
           MonsterMithril.js_root('core/dom.coffee'),

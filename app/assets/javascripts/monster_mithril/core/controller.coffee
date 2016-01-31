@@ -22,9 +22,9 @@
 $controller = (name, args..., definition) ->
   __fun
   names = name.split '/'
-  app.store["#{names[0]}/#{names[1]}"] = {}
   app[names[0]]           ?= {}
   app[names[0]][names[1]] ?= {}
+  store_obj = new $storage(name)
   super_def = class extends definition
     constructor:->
       @_inject args
@@ -34,6 +34,7 @@ $controller = (name, args..., definition) ->
       @_controller = names[0]
       @_action     = names[1]
       @Api = new app.services.Api()
+      @$store = store_obj.$store
       super
     $on: (name,fun)=>
       $register @_name, name, fun
@@ -41,12 +42,6 @@ $controller = (name, args..., definition) ->
       @$[arg] = @[arg] for arg in args
     param:(name)->
       m.route.param name
-    store:(val,input)=>
-      key = "#{@_controller}/#{@_action}"
-      if input is undefined
-        app.store[key][val]
-      else
-        app.store[key][val] = input
     _inject:(args)=>
       for arg_name in args
         if typeof arg_name is 'object'

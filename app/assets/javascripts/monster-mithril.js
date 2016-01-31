@@ -3,6 +3,7 @@
 
 //= require './monster_mithril/core/inflection'
 //= require './monster_mithril/core/api'
+//= require './monster_mithril/core/storage'
 //= require './monster_mithril/core/comp'
 //= require './monster_mithril/core/controller'
 //= require './monster_mithril/core/dom'
