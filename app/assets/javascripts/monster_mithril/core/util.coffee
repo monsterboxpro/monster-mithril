@@ -50,8 +50,7 @@ util.destroy = (collection,data)->
 util.last = (arr)->
   arr[arr.length=1]
 
-_ = {} unless window._
-window._ = _
+window._ = {} unless window._
 
 window._.extend     ||= util.extend
 window._.any        ||= util.any
