@@ -1,5 +1,7 @@
 if typeof _isomorphic != 'undefined'
-  m.route =
+  m.route = ->
+    _iso_path
+  m.route.param =
     param:(key)->
       _iso_param[key]
 

@@ -1,8 +1,9 @@
 module MonsterMithril
   class Renderer
     attr_accessor :js
-    def initialize nsp, scp, data, param={}, init={}
+    def initialize path, nsp, scp, data, param={}, init={}
       collect_js nsp.to_sym
+      preload_path path
       preload_data data
       preload_init init
       preload_param param
@@ -30,6 +31,10 @@ module MonsterMithril
         n = l.match(/coffee$/) ? render_coffee("#{p}#{l}") :  IO.read("#{p}#{l}")
         self.js << n
       end
+    end
+
+    def preload_path path
+      self.js << "var _iso_path  = '#{path}';"
     end
 
     def preload_init init
