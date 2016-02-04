@@ -60,3 +60,4 @@ window._.last       ||= util.last
 window._.create  = util.create
 window._.update  = util.update
 window._.destroy = util.destroy
+_ = window._ unless _

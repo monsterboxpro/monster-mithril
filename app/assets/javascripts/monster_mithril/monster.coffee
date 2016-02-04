@@ -1,9 +1,8 @@
 if typeof _isomorphic != 'undefined'
   m.route = ->
     _iso_path
-  m.route.param =
-    param:(key)->
-      _iso_param[key]
+  m.route.param =(key)->
+    _iso_param[key]
 
 api_loaded = false
 $$  = {}
