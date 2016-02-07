@@ -1,8 +1,6 @@
 # old and should be deperacated
 $comp = (tag,name,data)->
   names = name.split '/'
-  app.store[name] ?= {}
-  #m.component app[names[0]][names[1]], data
   m tag, app[names[0]][names[1]].view(app[names[0]][names[1]].controller(data))
 window.$comp       = $comp
 
@@ -11,9 +9,9 @@ $component = (name, args..., definition) ->
   __fun
   names = name.split '/'
   $$[names[0]] ?= {} unless names.length is 1
-  store_obj = new $storage(name)
   super_def = class extends definition
     constructor:->
+      store_obj = new $storage()
       @_inject args
       @__fun       = __fun
       @$           = {}
@@ -39,11 +37,14 @@ $component = (name, args..., definition) ->
   __fun = ()->
     # Would be nice to be able to use splat eg. arguments...
     # https://github.com/jashkenas/coffeescript/issues/2183
+    $storage.push_key('shared/'+name)
     ctrl = new super_def(arguments).$
+    content
     if names.length is 1
-      app.shared[names[0]].view ctrl
+      content = app.shared[names[0]].view ctrl
     else
-      app[names[0]][names[1]].view ctrl
+      content = app[names[0]][names[1]].view ctrl
+    content
   if names.length is 1
     $$[names[0]] = __fun
   else

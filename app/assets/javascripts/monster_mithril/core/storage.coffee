@@ -1,17 +1,31 @@
-$storage = class
-  constructor: (key)->
-    @key = key
-    @uniq_id = Math.random().toString(36).substring(7);
+class $storage
+  @stack: []
+  @index: 0
+  @push_key: (key)=>
+    if($storage.stack.length == 0)
+      $storage.index = 0
+    $storage.stack.push key
+  @pop_key: =>
+    $storage.stack.pop()
+  constructor: ()->
+    @container = {}
 
-    if(typeof app.store[@key] == 'undefined')
-      app.store[@key] = {}
-    if(typeof app.store[@key][@uniq_id] == 'undefined')
-      app.store[@key][@uniq_id] = {}
+    leaf = _.create_path(app.store, $storage.stack)
+
+    if(typeof leaf._instances == 'undefined')
+      leaf._instances = {}
+
+    if(typeof leaf._instances[$storage.index] == 'undefined')
+      leaf._instances[$storage.index] = @container
+    else
+      @container = leaf._instances[$storage.index]
+
+    $storage.index += 1
 
   $store: (val,input)=>
     if input is undefined
-      app.store[@key][@uniq_id][val]
+      @container[val]
     else
-      app.store[@key][@uniq_id][val] = input
+      @container[val] = input
 
 window.$storage = $storage

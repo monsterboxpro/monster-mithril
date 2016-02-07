@@ -24,9 +24,9 @@ $controller = (name, args..., definition) ->
   names = name.split '/'
   app[names[0]]           ?= {}
   app[names[0]][names[1]] ?= {}
-  store_obj = new $storage(name)
   super_def = class extends definition
     constructor:->
+      store_obj = new $storage
       @_inject args
       @__fun       = __fun
       @$           = {}
@@ -50,6 +50,7 @@ $controller = (name, args..., definition) ->
         else
           @[arg_name] = new app.services[arg_name]
   __fun = ->
+    $storage.push_key(name)
     new super_def(arguments).$
   app[names[0]][names[1]].controller = __fun
 

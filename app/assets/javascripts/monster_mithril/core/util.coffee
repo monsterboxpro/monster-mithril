@@ -1,4 +1,12 @@
 util = {}
+
+util.create_path = (obj, path) ->
+  iterator = obj
+  for key in path
+    iterator[key] = {} if(typeof iterator[key] == 'undefined')
+    iterator = iterator[key]
+  iterator
+
 util.extend = (target, source) ->
   target = target || {}
   for idx, prop of Object.keys source
@@ -52,6 +60,7 @@ util.last = (arr)->
 
 window._ = {} unless window._
 
+window._.create_path ||= util.create_path
 window._.extend     ||= util.extend
 window._.any        ||= util.any
 window._.find_by_id ||= util.find_by_id
