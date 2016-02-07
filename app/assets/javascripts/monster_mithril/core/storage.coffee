@@ -5,6 +5,7 @@ class $storage
     if($storage.stack.length == 0)
       $storage.index = 0
     $storage.stack.push key
+    $storage.index += 1
   @pop_key: =>
     $storage.stack.pop()
   constructor: ()->
