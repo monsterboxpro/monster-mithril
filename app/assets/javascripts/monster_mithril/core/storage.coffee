@@ -18,6 +18,7 @@ class $storage
 
     if(typeof leaf._instances[$storage.index] == 'undefined')
       leaf._instances[$storage.index] = @container
+      @container._UUID = _.generate_UUID()
     else
       @container = leaf._instances[$storage.index]
 
