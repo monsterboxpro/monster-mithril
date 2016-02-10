@@ -1,4 +1,5 @@
 class Form
+  redirect: true
   pull: false
   params:=>
     attrs = {}
@@ -13,6 +14,8 @@ class Form
     @action       = 'edit' if @_action is 'form' and @param('id')
     @$.loading = false
     @set_model args
+    if @redirect is false
+      @$.flash = m.prop()
     @$export 'submit',
              'back',
              'destroy'
@@ -70,7 +73,13 @@ class Form
   create_success:(data)=> @success data
   update_success:(data)=>  @success data
   destroy_success:(data)=> # define yourself
-  success:(data)=> m.route "#{@table_name}/#{data.id}"
+  success:(data)=> 
+    if @redirect is true
+      m.route "#{@table_name}/#{data.id}"
+    else if @redirect is false
+      @$.flash 'success'
+    else
+      m.route @redirect()
   error:(data)=>
     @$.model.errors data
   custom_success:(data)=>
