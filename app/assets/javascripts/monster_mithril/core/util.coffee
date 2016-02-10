@@ -1,5 +1,19 @@
 util = {}
 
+#RFC4122-v4 compliant...
+util.generate_UUID = ()->
+  d = new Date().getTime()
+  if(window.performance && typeof window.performance.now == "function")
+    d += performance.now()
+
+  uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace /[xy]/g, (c)->
+    r = (d + Math.random()*16)%16 | 0
+    d = Math.floor(d/16)
+    return (if (c=='x') then r else (r&0x3|0x8)).toString(16)
+
+  return uuid
+
+
 util.create_path = (obj, path) ->
   iterator = obj
   for key in path
@@ -60,6 +74,8 @@ util.last = (arr)->
 
 window._ = {} unless window._
 
+
+window._.generate_UUID ||= util.generate_UUID
 window._.create_path ||= util.create_path
 window._.extend     ||= util.extend
 window._.any        ||= util.any

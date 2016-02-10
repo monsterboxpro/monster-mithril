@@ -37,7 +37,8 @@ $controller = (name, args..., definition) ->
       @$store = store_obj.$store
       super
     $on: (name,fun)=>
-      $register @_name, name, fun
+      scope = @_name + @$store('_UUID')
+      $register scope, name, fun
     $export: (args...)=>
       @$[arg] = @[arg] for arg in args
     param:(name)->
