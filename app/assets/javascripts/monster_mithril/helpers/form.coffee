@@ -74,7 +74,7 @@ class Form
   error:(data)=>
     @$.model.errors data
   custom_success:(data)=>
-    @$.model = data
+    @$.model.reset data
   can_pull:(name)=>
     if _.is_array @pull
       _.any @pull, (n)-> n is name
