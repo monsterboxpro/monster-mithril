@@ -65,13 +65,13 @@ class Form
     @$.model.reset data
     name         = @table_name.singularize()
     @$.loading = true
-  create_success:(e,data)=> @success data
-  update_success:(e,data)=>  @success data
-  destroy_success:(e,data)=> # define yourself
+  create_success:(data)=> @success data
+  update_success:(data)=>  @success data
+  destroy_success:(data)=> # define yourself
   success:(data)=> m.route "#{@table_name}/#{data.id}"
   error:(data)=>
     @$.model.errors data
-  custom_success:(e,data)=>
+  custom_success:(data)=>
     @$.model = data
   can_pull:(name)=>
     if _.is_array @pull
