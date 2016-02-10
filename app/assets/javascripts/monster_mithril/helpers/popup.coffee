@@ -84,8 +84,7 @@ class Popup
       @$.model.reset data
   custom_success:(data)=>
     if @$.model
-      for k,v of data
-        @$.model[k](v) if @$.model[k]
+      @$.model.reset data
   success:(data)=>
     @$.pop(false)
   error:(data)=>
