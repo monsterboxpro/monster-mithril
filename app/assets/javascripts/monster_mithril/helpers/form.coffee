@@ -12,6 +12,13 @@ class Form
     @action       = 'new'  if @_action is 'form'
     @action       = 'edit' if @_action is 'form' and @param('id')
     @$.loading = false
+    @set_model args
+    @$export 'submit',
+             'back',
+             'destroy'
+    @_register()
+    @reindex()
+  set_model:(args)=>
     if args[0]
       unless args[0][name]
         console.log '[Form] arguments:', args[0]
@@ -20,11 +27,6 @@ class Form
       @$[key] = val for key,val of args[0][name]
     else
       @$.model = $model(@_controller.classify())
-    @$export 'submit',
-             'back',
-             'destroy'
-    @_register()
-    @reindex()
   reindex:=>
     switch @action
       when 'new'
