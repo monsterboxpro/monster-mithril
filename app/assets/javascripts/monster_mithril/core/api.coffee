@@ -34,11 +34,11 @@ class ApiBase
   _request:(tn,a,kind,url,data,success,error)=> 
     ev_success = (data)->
       $broadcast "#{tn}/#{a}", data
-      success(data) if success
+      success(data) if typeof success is 'function'
       data
     ev_error = (data)->
       $broadcast "#{tn}/#{a}#err", data
-      error(data) if error
+      error(data) if typeof error is 'function'
       data
 
     if @preload
