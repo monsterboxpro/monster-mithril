@@ -7,7 +7,6 @@ class Form
     attrs
   attrs:=> {}
   constructor:(args)->
-    name = "#{@_controller}_#{@_action}"
     @table_name ||= @_controller
     @action     ||= @_action
     @action       = 'new'  if @_action is 'form'
@@ -22,6 +21,7 @@ class Form
     @_register()
     @reindex()
   set_model:(args)=>
+    name = "#{@_controller}_#{@_action}"
     if args[0]
       unless args[0][name]
         console.log '[Form] arguments:', args[0]
