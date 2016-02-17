@@ -24,7 +24,7 @@ util.create_path = (obj, path) ->
 util.extend = (target, source) ->
   target = target || {}
   for idx, prop of Object.keys source
-    if (typeof source[prop] == 'object')
+    if (source[prop] && typeof source[prop] == 'object')
       target[prop] = util.extend(target[prop], source[prop])
     else
       target[prop] = source[prop]
