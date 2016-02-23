@@ -31,15 +31,17 @@ class ApiBase
   _post:(  tn,a,name,data={},success,error)=> @_request tn, a, 'POST'  , name, data, success, error
   _put:(   tn,a,name,data={},success,error)=> @_request tn, a, 'PUT'   , name, data, success, error
   _delete:(tn,a,name,data={},success,error)=> @_request tn, a, 'DELETE', name, data, success, error
-  _request:(tn,a,kind,url,data,success,error)=> 
+  _request:(tn,a,kind,url,data,success,error)=>
+    deferred = m.deferred()
+
     ev_success = (data)->
       $broadcast "#{tn}/#{a}", data
       success(data) if typeof success is 'function'
-      data
+      deferred.resolve data
     ev_error = (data)->
       $broadcast "#{tn}/#{a}#err", data
       error(data) if typeof error is 'function'
-      data
+      deferred.reject 'api_error'
 
     if @preload
       data = _iso_preload["#{tn}/#{a}"]
@@ -55,6 +57,8 @@ class ApiBase
         m.request(method: kind, url: url, data: form_data, serialize: serialize, config: @_config).then(ev_success,ev_error)
       else
         m.request(method: kind, url: url, data: data, config: @_config).then(ev_success,ev_error)
+
+    deferred.promise
   _config:(xhr)=> xhr.setRequestHeader 'X-CSRF-Token',  $dom.get("meta[name='csrf-token']")[0].content
   _extract_id:(model)=>
     if typeof model is 'string' || typeof model is 'number'
