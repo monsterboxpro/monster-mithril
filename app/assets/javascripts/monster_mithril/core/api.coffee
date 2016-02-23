@@ -26,25 +26,34 @@ form_object_to_form_data = (value,fd=null,root=[]) ->
     fd.append parameter_name(root), value
   fd
 
+request_wrap = (method)=>
+  #success and error callbacks can be set via returned promise
+  (url, data, iso_path)=>
+    ApiBase._request iso_path, method, url, data, undefined, undefined
+
 class ApiBase
-  _get:(   tn,a,name,data={},success,error)=> @_request tn, a, 'GET'   , name, data, success, error
-  _post:(  tn,a,name,data={},success,error)=> @_request tn, a, 'POST'  , name, data, success, error
-  _put:(   tn,a,name,data={},success,error)=> @_request tn, a, 'PUT'   , name, data, success, error
-  _delete:(tn,a,name,data={},success,error)=> @_request tn, a, 'DELETE', name, data, success, error
-  _request:(tn,a,kind,url,data,success,error)=>
+  @preload = (typeof _isomorphic != 'undefined')
+
+  get: request_wrap('GET')
+  post: request_wrap('POST')
+  put: request_wrap('PUT')
+  delete: request_wrap('DELETE')
+
+  @_request: (iso_path, method, url, data, success, error) =>
     deferred = m.deferred()
+    iso_pathless = (iso_path == undefined)
 
     ev_success = (data)->
-      $broadcast "#{tn}/#{a}", data
+      $broadcast iso_path, data unless iso_pathless
       success(data) if typeof success is 'function'
       deferred.resolve data
     ev_error = (data)->
-      $broadcast "#{tn}/#{a}#err", data
+      $broadcast "#{iso_path}#err", data unless iso_pathless
       error(data) if typeof error is 'function'
       deferred.reject 'api_error'
 
-    if @preload
-      data = _iso_preload["#{tn}/#{a}"]
+    if(@preload && !iso_pathless)
+      data = _iso_preload[iso_path]
       ev_success(data)
       ->
         data
@@ -54,9 +63,9 @@ class ApiBase
         form_data = form_object_to_form_data(data)
         serialize = (value)->
           return value
-        m.request(method: kind, url: url, data: form_data, serialize: serialize, config: @_config).then(ev_success,ev_error)
+        m.request(method: method, url: url, data: form_data, serialize: serialize, config: @_config).then(ev_success,ev_error)
       else
-        m.request(method: kind, url: url, data: data, config: @_config).then(ev_success,ev_error)
+        m.request(method: method, url: url, data: data, config: @_config).then(ev_success,ev_error)
 
     deferred.promise
   _config:(xhr)=> xhr.setRequestHeader 'X-CSRF-Token',  $dom.get("meta[name='csrf-token']")[0].content
@@ -78,37 +87,25 @@ class ApiBase
       only[o] = true for o in options.split(' ')
     @[tn] = {}
     if only.index
-      @[tn].index = (params,success,error)=> @_get tn, 'index', @path(tn), params, success,error
+      @[tn].index = (params,success,error)=> ApiBase._request "#{tn}/index", 'GET', @path(tn), params, success,error
     if only.new
-      @[tn].new = (params,success,error)=> @_get tn, 'new', @path(tn,'new'), params, success,error
+      @[tn].new = (params,success,error)=> ApiBase._request "#{tn}/new", 'GET', @path(tn,'new'), params, success,error
     if only.create
-      @[tn].create = (params,success,error)=> @_post tn, 'create', @path(tn), params, success,error
+      @[tn].create = (params,success,error)=> ApiBase._request "#{tn}/create", 'POST', @path(tn), params, success,error
     if only.show
-      @[tn].show = (model,params,success,error)=> @_get tn, 'show', @path(tn,@_extract_id(model)), params, success,error
+      @[tn].show = (model,params,success,error)=> ApiBase._request "#{tn}/show", 'GET', @path(tn,@_extract_id(model)), params, success,error
     if only.edit
-      @[tn].edit = (model,params,success,error)=> @_get tn, 'edit', @path(tn,@_extract_id(model),'edit'), params, success,error
+      @[tn].edit = (model,params,success,error)=> ApiBase._request "#{tn}/edit", 'GET', @path(tn,@_extract_id(model),'edit'), params, success,error
     if only.update
-      @[tn].update = (model,params,success,error)=> @_put tn, 'update', @path(tn,@_extract_id(model)), params, success,error
+      @[tn].update = (model,params,success,error)=> ApiBase._request "#{tn}/update", 'PUT', @path(tn,@_extract_id(model)), params, success,error
     if only.destroy
-      @[tn].destroy = (model,params,success,error)=> @_delete tn, 'destroy', @path(tn,@_extract_id(model)), params, success,error
+      @[tn].destroy = (model,params,success,error)=> ApiBase._request "#{tn}/destroy", 'DELETE', @path(tn,@_extract_id(model)), params, success,error
     @_collection tn,action,method for action,method of options.collection
     @_member     tn,action,method for action,method of options.member
   _collection:(tn,a,method)=>
-    name = @path tn, a
-    fun = switch method
-      when 'get'     then (params,success,error)=> @_get     tn, a, name, params, success, error
-      when 'post'    then (params,success,error)=> @_post    tn, a, name, params, success, error
-      when 'put'     then (params,success,error)=> @_put     tn, a, name, params, success, error
-      when 'destroy' then (params,success,error)=> @_delete  tn, a, name, params, success, error
-    @[tn][a] = fun
+    @[tn][a] = (params,success,error)=> ApiBase._request "#{tn}/#{a}", method.toUpperCase(), @path(tn, a), params, success, error
   _member:(tn,a,method)=>
-    fun = switch method
-      when 'get'     then (model,params,success,error)=> @_get    tn, a, @path(tn, model.id, a), params, success, error
-      when 'post'    then (model,params,success,error)=> @_post   tn, a, @path(tn, model.id, a), params, success, error
-      when 'put'     then (model,params,success,error)=> @_put    tn, a, @path(tn, model.id, a), params, success, error
-      when 'destroy' then (model,params,success,error)=> @_delete tn, a, @path(tn, model.id, a), params, success, error
-    @[tn][a] = fun
+    @[tn][a] = (model,params,success,error)=> ApiBase._request "#{tn}/#{a}", method.toUpperCase(), @path(tn, model.id, a), params, success, error
   constructor:()->
-    @preload =  typeof _isomorphic != 'undefined'
     @_resource table_name, options for table_name,options of @resources
 window.ApiBase = ApiBase
