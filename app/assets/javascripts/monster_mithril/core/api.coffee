@@ -75,37 +75,43 @@ class ApiBase
     else
       model.id
   path:(args...)=>
-    path = []
-    path.push @namespace if @namespace
-    path.push a for a in args
+    namespace = @namespace
+    if(args[0] instanceof Array)
+      path = args[0]
+      if(args[1])
+        namespace = args[1]
+    else
+      path = args
+    path.unshift namespace if namespace
     path = path.join '/'
     "/#{path}"
   _resource:(tn,options)=>
+    ns = options.namespace
     only = {index: true, new: true, create: true, show: true, edit: true, update: true, destroy: true}
     if typeof options is 'string' 
       only = {index: false, new: false, create: false, show: false, edit: false, update: false, destroy: false}
       only[o] = true for o in options.split(' ')
     @[tn] = {}
     if only.index
-      @[tn].index = (params,success,error)=> ApiBase._request "#{tn}/index", 'GET', @path(tn), params, success,error
+      @[tn].index = (params,success,error)=> ApiBase._request "#{tn}/index", 'GET', @path([tn], ns), params, success,error
     if only.new
-      @[tn].new = (params,success,error)=> ApiBase._request "#{tn}/new", 'GET', @path(tn,'new'), params, success,error
+      @[tn].new = (params,success,error)=> ApiBase._request "#{tn}/new", 'GET', @path([tn,'new'], ns), params, success,error
     if only.create
-      @[tn].create = (params,success,error)=> ApiBase._request "#{tn}/create", 'POST', @path(tn), params, success,error
+      @[tn].create = (params,success,error)=> ApiBase._request "#{tn}/create", 'POST', @path([tn], ns), params, success,error
     if only.show
-      @[tn].show = (model,params,success,error)=> ApiBase._request "#{tn}/show", 'GET', @path(tn,@_extract_id(model)), params, success,error
+      @[tn].show = (model,params,success,error)=> ApiBase._request "#{tn}/show", 'GET', @path([tn,@_extract_id(model)], ns), params, success,error
     if only.edit
-      @[tn].edit = (model,params,success,error)=> ApiBase._request "#{tn}/edit", 'GET', @path(tn,@_extract_id(model),'edit'), params, success,error
+      @[tn].edit = (model,params,success,error)=> ApiBase._request "#{tn}/edit", 'GET', @path([tn,@_extract_id(model),'edit'], ns), params, success,error
     if only.update
-      @[tn].update = (model,params,success,error)=> ApiBase._request "#{tn}/update", 'PUT', @path(tn,@_extract_id(model)), params, success,error
+      @[tn].update = (model,params,success,error)=> ApiBase._request "#{tn}/update", 'PUT', @path([tn,@_extract_id(model)], ns), params, success,error
     if only.destroy
-      @[tn].destroy = (model,params,success,error)=> ApiBase._request "#{tn}/destroy", 'DELETE', @path(tn,@_extract_id(model)), params, success,error
-    @_collection tn,action,method for action,method of options.collection
-    @_member     tn,action,method for action,method of options.member
-  _collection:(tn,a,method)=>
-    @[tn][a] = (params,success,error)=> ApiBase._request "#{tn}/#{a}", method.toUpperCase(), @path(tn, a), params, success, error
-  _member:(tn,a,method)=>
-    @[tn][a] = (model,params,success,error)=> ApiBase._request "#{tn}/#{a}", method.toUpperCase(), @path(tn, model.id, a), params, success, error
+      @[tn].destroy = (model,params,success,error)=> ApiBase._request "#{tn}/destroy", 'DELETE', @path([tn,@_extract_id(model)], ns), params, success,error
+    @_collection tn,action,method,ns for action,method of options.collection
+    @_member     tn,action,method,ns for action,method of options.member
+  _collection:(tn,a,method,ns)=>
+    @[tn][a] = (params,success,error)=> ApiBase._request "#{tn}/#{a}", method.toUpperCase(), @path([tn, a], ns), params, success, error
+  _member:(tn,a,method,ns)=>
+    @[tn][a] = (model,params,success,error)=> ApiBase._request "#{tn}/#{a}", method.toUpperCase(), @path([tn, model.id, a], ns), params, success, error
   constructor:()->
     @_resource table_name, options for table_name,options of @resources
 window.ApiBase = ApiBase
