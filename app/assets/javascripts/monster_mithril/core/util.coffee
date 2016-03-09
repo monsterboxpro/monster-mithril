@@ -30,6 +30,15 @@ util.extend = (target, source) ->
       target[prop] = source[prop]
   target
 
+util.each = (target, iterator) ->
+  if(target instanceof Array)
+    for value in target
+      iterator(value)
+  else
+    for key, value of target
+      iterator(value, key)
+
+
 util.any = (arr,fun=null) ->
   val = false
   if util.is_array(arr)
@@ -78,6 +87,7 @@ window._ = {} unless window._
 window._.generate_UUID ||= util.generate_UUID
 window._.create_path ||= util.create_path
 window._.extend     ||= util.extend
+window._.each     ||= util.each
 window._.any        ||= util.any
 window._.find_by_id ||= util.find_by_id
 window._.is_array   ||= util.is_array
