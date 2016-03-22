@@ -43,6 +43,9 @@ class ApiBase
     deferred = m.deferred()
     iso_pathless = (iso_path == undefined)
 
+    config = (xhr)=>
+      xhr.setRequestHeader 'X-CSRF-Token',  $dom.get("meta[name='csrf-token']")[0].content
+
     ev_success = (data)->
       $broadcast iso_path, data unless iso_pathless
       success(data) if typeof success is 'function'
@@ -63,12 +66,11 @@ class ApiBase
         form_data = form_object_to_form_data(data)
         serialize = (value)->
           return value
-        m.request(method: method, url: url, data: form_data, serialize: serialize, config: @_config).then(ev_success,ev_error)
+        m.request(method: method, url: url, data: form_data, serialize: serialize, config: config).then(ev_success,ev_error)
       else
-        m.request(method: method, url: url, data: data, config: @_config).then(ev_success,ev_error)
+        m.request(method: method, url: url, data: data, config: config).then(ev_success,ev_error)
 
     deferred.promise
-  _config:(xhr)=> xhr.setRequestHeader 'X-CSRF-Token',  $dom.get("meta[name='csrf-token']")[0].content
   _extract_id:(model)=>
     if typeof model is 'string' || typeof model is 'number'
       model
