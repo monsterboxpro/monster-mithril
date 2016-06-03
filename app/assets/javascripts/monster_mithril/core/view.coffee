@@ -11,7 +11,7 @@ $view = (name, definition) ->
     in_stack = _.any $storage.stack, (item)->
       item == name
     if not in_stack
-      $storage.push_key name
+      new $storage(name) #spin up a storage for this controller-less view
     klass = new super_def(ctrl)
     content = klass.render()
     if klass.layout

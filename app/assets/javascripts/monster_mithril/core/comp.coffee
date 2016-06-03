@@ -11,7 +11,6 @@ $component = (name, args..., definition) ->
   $$[names[0]] ?= {} unless names.length is 1
   super_def = class extends definition
     constructor:->
-      store_obj = new $storage()
       @_inject args
       @__fun       = __fun
       @$           = {}
@@ -19,7 +18,7 @@ $component = (name, args..., definition) ->
       @_controller = names[0]
       @_action     = names[1]
       @Api = new app.services.Api()
-      @$store = store_obj.$store
+      @$store = new $storage("shared/#{name}").$store
       super
     $on: (name,fun)=>
       scope = @_name + @$store('_UUID')
@@ -38,7 +37,6 @@ $component = (name, args..., definition) ->
   __fun = ()->
     # Would be nice to be able to use splat eg. arguments...
     # https://github.com/jashkenas/coffeescript/issues/2183
-    $storage.push_key('shared/'+name)
     ctrl = new super_def(arguments).$
     content
     if names.length is 1
