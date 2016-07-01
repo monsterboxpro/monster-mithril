@@ -26,7 +26,6 @@ $controller = (name, args..., definition) ->
   app[names[0]][names[1]] ?= {}
   super_def = class extends definition
     constructor:->
-      store_obj = new $storage
       @_inject args
       @__fun       = __fun
       @$           = {}
@@ -34,7 +33,7 @@ $controller = (name, args..., definition) ->
       @_controller = names[0]
       @_action     = names[1]
       @Api = new app.services.Api()
-      @$store = store_obj.$store
+      @$store = new $storage(name).$store
       super
     $on: (name,fun)=>
       $register @scope(), name, fun
@@ -52,7 +51,6 @@ $controller = (name, args..., definition) ->
         else
           @[arg_name] = new app.services[arg_name]
   __fun = ->
-    $storage.push_key(name)
     new super_def(arguments).$
   app[names[0]][names[1]].controller = __fun
 
