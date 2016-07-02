@@ -1,31 +1,39 @@
 class $storage
   @stack: []
   @index: 0
+
   @push_key: (key)=>
-    if($storage.stack.length == 0)
-      $storage.index = 0
     $storage.stack.push key
-    $storage.index += 1
   @pop_key: =>
     $storage.stack.pop()
-  constructor: ()->
+
+  constructor: (name)->
+    if($storage.stack.length == 0)
+      $storage.index = 0
+
+    $storage.push_key(name)
+
     @container = {}
 
     leaf = _.create_path(app.store, $storage.stack)
 
-    if(typeof leaf._instances == 'undefined')
+    if(leaf._instances is undefined)
       leaf._instances = {}
 
-    if(typeof leaf._instances[$storage.index] == 'undefined')
+    if(leaf._instances[$storage.index] is undefined)
       leaf._instances[$storage.index] = @container
       @container._UUID = _.generate_UUID()
+      @container._stack = $storage.stack.slice(0)
+      @container._instance = $storage.index
     else
       @container = leaf._instances[$storage.index]
 
     $storage.index += 1
 
   $store: (val,input)=>
-    if input is undefined
+    if(val is undefined and input is undefined)
+      return @container
+    else if(input is undefined)
       @container[val]
     else
       @container[val] = input
