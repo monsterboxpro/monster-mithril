@@ -21,8 +21,9 @@ $component = (name, args..., definition) ->
       @$store = new $storage("shared/#{name}").$store
       super
     $on: (name,fun)=>
-      scope = @_name + @$store('_UUID')
-      $register scope, name, fun
+      $register @scope(), name, fun
+    scope:=>
+      '-component'
     $export: (args...)=>
       @$[arg] = @[arg] for arg in args
     param:(name)->

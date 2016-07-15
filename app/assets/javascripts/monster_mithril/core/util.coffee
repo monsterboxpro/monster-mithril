@@ -25,7 +25,7 @@ util.extend = (target, source) ->
   target = target || {}
   for idx, prop of Object.keys source
     if (source[prop] && typeof source[prop] == 'object')
-      target[prop] = util.extend(target[prop], source[prop])
+      target[prop] = Object.create(source[prop])
     else
       target[prop] = source[prop]
   target
