@@ -5,6 +5,7 @@ doc
 tmp/**/*
 Gemfile.lock
 .bundle
+.idea
 .
 .DS_Store
 /**/*/.DS_Store
