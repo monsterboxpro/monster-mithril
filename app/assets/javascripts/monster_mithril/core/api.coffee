@@ -33,6 +33,7 @@ request_wrap = (method)=>
 
 class ApiBase
   @preload = (typeof _isomorphic != 'undefined')
+  @custom_headers = {}
 
   get: request_wrap('GET')
   post: request_wrap('POST')
@@ -44,7 +45,9 @@ class ApiBase
     iso_pathless = (iso_path == undefined)
 
     config = (xhr)=>
-      xhr.setRequestHeader 'X-CSRF-Token',  $dom.get("meta[name='csrf-token']")[0].content
+      for k, v of @custom_headers
+        xhr.setRequestHeader k, v
+      xhr
 
     ev_success = (data)->
       $broadcast iso_path, data unless iso_pathless
