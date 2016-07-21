@@ -26,27 +26,30 @@ form_object_to_form_data = (value,fd=null,root=[]) ->
     fd.append parameter_name(root), value
   fd
 
+# AB - the headers isn't even getting passed through,
+# this solution will not do
 request_wrap = (method)=>
   #success and error callbacks can be set via returned promise
   (url, data, iso_path)=>
-    ApiBase._request iso_path, method, url, data, undefined, undefined
+    ApiBase._request iso_path, method, url, undefined, data, undefined, undefined
 
 class ApiBase
   @preload = (typeof _isomorphic != 'undefined')
-  @custom_headers = {}
 
-  get: request_wrap('GET')
-  post: request_wrap('POST')
-  put: request_wrap('PUT')
-  delete: request_wrap('DELETE')
+  get    : request_wrap 'GET'
+  post   : request_wrap 'POST'
+  put    : request_wrap 'PUT'
+  delete : request_wrap 'DELETE'
 
-  @_request: (iso_path, method, url, data, success, error) =>
+  @_request: (iso_path, method, url, headers, data, success, error) =>
     deferred = m.deferred()
     iso_pathless = (iso_path == undefined)
 
     config = (xhr)=>
-      for k, v of @custom_headers
-        xhr.setRequestHeader k, v
+      for k, v of headers
+        vv = v
+        vv = v() if typeof v is 'function'
+        xhr.setRequestHeader k, vv
       xhr
 
     ev_success = (data)->
@@ -97,26 +100,19 @@ class ApiBase
       only = {index: false, new: false, create: false, show: false, edit: false, update: false, destroy: false}
       only[o] = true for o in options.split(' ')
     @[tn] = {}
-    if only.index
-      @[tn].index = (params,success,error)=> ApiBase._request "#{tn}/index", 'GET', @path([tn], ns), params, success,error
-    if only.new
-      @[tn].new = (params,success,error)=> ApiBase._request "#{tn}/new", 'GET', @path([tn,'new'], ns), params, success,error
-    if only.create
-      @[tn].create = (params,success,error)=> ApiBase._request "#{tn}/create", 'POST', @path([tn], ns), params, success,error
-    if only.show
-      @[tn].show = (model,params,success,error)=> ApiBase._request "#{tn}/show", 'GET', @path([tn,@_extract_id(model)], ns), params, success,error
-    if only.edit
-      @[tn].edit = (model,params,success,error)=> ApiBase._request "#{tn}/edit", 'GET', @path([tn,@_extract_id(model),'edit'], ns), params, success,error
-    if only.update
-      @[tn].update = (model,params,success,error)=> ApiBase._request "#{tn}/update", 'PUT', @path([tn,@_extract_id(model)], ns), params, success,error
-    if only.destroy
-      @[tn].destroy = (model,params,success,error)=> ApiBase._request "#{tn}/destroy", 'DELETE', @path([tn,@_extract_id(model)], ns), params, success,error
+    @[tn].index   = (pms,suc,err)=>       ApiBase._request "#{tn}/index"  , 'GET'   , @path([tn], ns)                           , @headers, pms, suc,err if only.index
+    @[tn].new     = (pms,suc,err)=>       ApiBase._request "#{tn}/new"    , 'GET'   , @path([tn,'new'], ns)                     , @headers, pms, suc,err if only.new
+    @[tn].create  = (pms,suc,err)=>       ApiBase._request "#{tn}/create" , 'POST'  , @path([tn], ns)                           , @headers, pms, suc,err if only.create
+    @[tn].show    = (model,pms,suc,err)=> ApiBase._request "#{tn}/show"   , 'GET'   , @path([tn,@_extract_id(model)], ns)       , @headers, pms, suc,err if only.show
+    @[tn].edit    = (model,pms,suc,err)=> ApiBase._request "#{tn}/edit"   , 'GET'   , @path([tn,@_extract_id(model),'edit'], ns), @headers, pms, suc,err if only.edit
+    @[tn].update  = (model,pms,suc,err)=> ApiBase._request "#{tn}/update" , 'PUT'   , @path([tn,@_extract_id(model)], ns)       , @headers, pms, suc,err if only.update
+    @[tn].destroy = (model,pms,suc,err)=> ApiBase._request "#{tn}/destroy", 'DELETE', @path([tn,@_extract_id(model)], ns)       , @headers, pms, suc,err if only.destroy
     @_collection tn,action,method,ns for action,method of options.collection
     @_member     tn,action,method,ns for action,method of options.member
   _collection:(tn,a,method,ns)=>
-    @[tn][a] = (params,success,error)=> ApiBase._request "#{tn}/#{a}", method.toUpperCase(), @path([tn, a], ns), params, success, error
+    @[tn][a] = (params,success,error)=> ApiBase._request "#{tn}/#{a}", method.toUpperCase(), @path([tn, a], ns), @headers, params, success, error
   _member:(tn,a,method,ns)=>
-    @[tn][a] = (model,params,success,error)=> ApiBase._request "#{tn}/#{a}", method.toUpperCase(), @path([tn, model.id, a], ns), params, success, error
+    @[tn][a] = (model,params,success,error)=> ApiBase._request "#{tn}/#{a}", method.toUpperCase(), @path([tn, model.id, a], ns), @headers, params, success, error
   constructor:()->
     @_resource table_name, options for table_name,options of @resources
 window.ApiBase = ApiBase
