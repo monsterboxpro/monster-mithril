@@ -65,15 +65,17 @@ class List
     @$[n].model.reset()
     $broadcast "#{@table_name}/new#pop"
   pop_show:(model)=>
-    n = "#{@_controller}_show"
-    @_check_model n
-    @$[n].model.reset()
-    $broadcast "#{@table_name}/show#pop", model: model
+    =>
+      n = "#{@_controller}_show"
+      @_check_model n
+      @$[n].model.reset()
+      $broadcast "#{@table_name}/show#pop", model: model
   pop_edit:(model)=>
-    n = "#{@table_name}_form"
-    @_check_model n
-    @$[n].model.reset()
-    $broadcast "#{@table_name}/edit#pop", model: model
+    =>
+      n = "#{@table_name}_form"
+      @_check_model n
+      @$[n].model.reset()
+      $broadcast "#{@table_name}/edit#pop", model: model
   pop_custom:(name)=>
     (model)=>
       n = "#{@_controller}_#{name}"

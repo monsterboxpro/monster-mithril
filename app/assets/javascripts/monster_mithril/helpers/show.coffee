@@ -17,9 +17,13 @@ class Show
       @$.pop =
         edit: @pop_edit
     @$.destroy = @destroy
+  pop_new:=>
+    @$["#{@table_name}_form"].model.reset()
+    $broadcast "#{@table_name}/new#pop"
   pop_edit:(model)=>
-    @$["#{@table_name}_form"].model.reset id: @param('id')
-    $broadcast "#{@table_name}/edit#pop", model: model
+    =>
+      @$["#{@table_name}_form"].model.reset id: @param('id')
+      $broadcast "#{@table_name}/edit#pop", model: model
   pop_custom:(name)=>
     (model)=>
       @$["#{@table_name}_#{name}"].model.reset id: @param('id')
