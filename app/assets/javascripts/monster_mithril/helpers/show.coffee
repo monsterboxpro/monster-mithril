@@ -41,7 +41,7 @@ class Show
     path = _.map @scope, (s)=> "#{_.pluralize(s)}/#{@$[s].id}"
     path.join '/'
   destroy:(model)=>
-    name = _.singularize @table_name
+    name = @table_name.singularize()
     msg  = "Are you sure you wish to destroy this #{name}"
     @Api[@table_name].destroy model, @attrs() if confirm msg
 
