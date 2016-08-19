@@ -41,7 +41,7 @@ class ApiBase
   put    : request_wrap 'PUT'
   delete : request_wrap 'DELETE'
 
-  @_request: (iso_path, method, url, headers, data, success, error) =>
+  @_request: (iso_path, method, url, attrs, headers, data, success, error) =>
     deferred = m.deferred()
     iso_pathless = (iso_path == undefined)
 
@@ -53,12 +53,12 @@ class ApiBase
       xhr
 
     ev_success = (data)->
-      $broadcast iso_path, data unless iso_pathless
-      success(data) if typeof success is 'function'
+      $broadcast iso_path, data, attrs unless iso_pathless
+      success(data,attrs) if typeof success is 'function'
       deferred.resolve data
     ev_error = (data)->
-      $broadcast "#{iso_path}#err", data unless iso_pathless
-      error(data) if typeof error is 'function'
+      $broadcast "#{iso_path}#err", data, attrs unless iso_pathless
+      error(data,attrs) if typeof error is 'function'
       deferred.reject 'api_error'
 
     if(@preload && !iso_pathless)
@@ -100,13 +100,13 @@ class ApiBase
       only = {index: false, new: false, create: false, show: false, edit: false, update: false, destroy: false}
       only[o] = true for o in options.split(' ')
     @[tn] = {}
-    @[tn].index   = (pms,suc,err)=>       ApiBase._request "#{tn}/index"  , 'GET'   , @path([tn], ns)                           , @headers, pms, suc,err if only.index
-    @[tn].new     = (pms,suc,err)=>       ApiBase._request "#{tn}/new"    , 'GET'   , @path([tn,'new'], ns)                     , @headers, pms, suc,err if only.new
-    @[tn].create  = (pms,suc,err)=>       ApiBase._request "#{tn}/create" , 'POST'  , @path([tn], ns)                           , @headers, pms, suc,err if only.create
-    @[tn].show    = (model,pms,suc,err)=> ApiBase._request "#{tn}/show"   , 'GET'   , @path([tn,@_extract_id(model)], ns)       , @headers, pms, suc,err if only.show
-    @[tn].edit    = (model,pms,suc,err)=> ApiBase._request "#{tn}/edit"   , 'GET'   , @path([tn,@_extract_id(model),'edit'], ns), @headers, pms, suc,err if only.edit
-    @[tn].update  = (model,pms,suc,err)=> ApiBase._request "#{tn}/update" , 'PUT'   , @path([tn,@_extract_id(model)], ns)       , @headers, pms, suc,err if only.update
-    @[tn].destroy = (model,pms,suc,err)=> ApiBase._request "#{tn}/destroy", 'DELETE', @path([tn,@_extract_id(model)], ns)       , @headers, pms, suc,err if only.destroy
+    @[tn].index   = (pms,attrs,suc,err)=>       ApiBase._request "#{tn}/index"  , 'GET'   , @path([tn], ns)                           , attrs, @headers, pms, suc,err if only.index
+    @[tn].new     = (pms,attrs,suc,err)=>       ApiBase._request "#{tn}/new"    , 'GET'   , @path([tn,'new'], ns)                     , attrs, @headers, pms, suc,err if only.new
+    @[tn].create  = (pms,attrs,suc,err)=>       ApiBase._request "#{tn}/create" , 'POST'  , @path([tn], ns)                           , attrs, @headers, pms, suc,err if only.create
+    @[tn].show    = (model,pms,attrs,suc,err)=> ApiBase._request "#{tn}/show"   , 'GET'   , @path([tn,@_extract_id(model)], ns)       , attrs, @headers, pms, suc,err if only.show
+    @[tn].edit    = (model,pms,attrs,suc,err)=> ApiBase._request "#{tn}/edit"   , 'GET'   , @path([tn,@_extract_id(model),'edit'], ns), attrs, @headers, pms, suc,err if only.edit
+    @[tn].update  = (model,pms,attrs,suc,err)=> ApiBase._request "#{tn}/update" , 'PUT'   , @path([tn,@_extract_id(model)], ns)       , attrs, @headers, pms, suc,err if only.update
+    @[tn].destroy = (model,pms,attrs,suc,err)=> ApiBase._request "#{tn}/destroy", 'DELETE', @path([tn,@_extract_id(model)], ns)       , attrs, @headers, pms, suc,err if only.destroy
     @_collection tn,action,method,ns for action,method of options.collection
     @_member     tn,action,method,ns for action,method of options.member
   _collection:(tn,a,method,ns)=>
