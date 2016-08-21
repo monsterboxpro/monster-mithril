@@ -110,9 +110,9 @@ class ApiBase
     @_collection tn,action,method,ns for action,method of options.collection
     @_member     tn,action,method,ns for action,method of options.member
   _collection:(tn,a,method,ns)=>
-    @[tn][a] = (params,success,error)=> ApiBase._request "#{tn}/#{a}", method.toUpperCase(), @path([tn, a], ns), @headers, params, success, error
+    @[tn][a] = (params,success,error)=> ApiBase._request "#{tn}/#{a}", method.toUpperCase(), @path([tn, a], ns), {}, @headers, params, success, error
   _member:(tn,a,method,ns)=>
-    @[tn][a] = (model,params,success,error)=> ApiBase._request "#{tn}/#{a}", method.toUpperCase(), @path([tn, model.id, a], ns), @headers, params, success, error
+    @[tn][a] = (model,params,success,error)=> ApiBase._request "#{tn}/#{a}", method.toUpperCase(), @path([tn, model.id, a], ns), {}, @headers, params, success, error
   constructor:()->
     @_resource table_name, options for table_name,options of @resources
 window.ApiBase = ApiBase
