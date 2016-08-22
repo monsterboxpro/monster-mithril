@@ -85,6 +85,9 @@ class Popup
   custom_success:(data)=>
     if @$.model
       @$.model.reset data
+  create_success:(data)=> @success data
+  update_success:(data)=>  @success data
+  destroy_success:(data)=> # define yourself
   success:(data)=>
     @$.pop(false)
   error:(data)=>
@@ -106,19 +109,19 @@ class Popup
     switch @_action
       when 'new'
         @$on "#{path}/new"       , @new_success
-        @$on "#{path}/create"    , @success
+        @$on "#{path}/create"    , @create_success
         @$on "#{path}/create#err", @error
       when 'edit'
-        @$on "#{path}/update"    , @success
-        @$on "#{path}/destroy"   , @success
+        @$on "#{path}/update"    , @update_success
+        @$on "#{path}/destroy"   , @destroy_success
         @$on "#{path}/update#err", @error
         @$on "#{path}/edit"      , @edit_success if @can_pull('edit')
       when 'form'
         @$on "#{path}/new"       , @new_success
-        @$on "#{path}/create"    , @success
+        @$on "#{path}/create"    , @create_success
         @$on "#{path}/create#err", @error
-        @$on "#{path}/update"    , @success
-        @$on "#{path}/destroy"   , @success
+        @$on "#{path}/update"    , @update_success
+        @$on "#{path}/destroy"   , @destroy_success
         @$on "#{path}/update#err", @error
         @$on "#{path}/edit"      , @edit_success
       else
