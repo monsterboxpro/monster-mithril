@@ -45,6 +45,8 @@ class Popup
     @$.model.errors {}
     @$.pop(true)
     @$.title "#{@_action} #{@_controller.singularize()}".titleize()
+    @reindex()
+  reindex:=>
     switch @_action
       when 'edit'
         if @can_pull('edit')
@@ -67,7 +69,6 @@ class Popup
        else
          if @can_pull()
            @Api[@_controller][@_action] data.model, @attrs()
-
   cancel:=>
     @$.pop(false)
   submit:(e)=>
