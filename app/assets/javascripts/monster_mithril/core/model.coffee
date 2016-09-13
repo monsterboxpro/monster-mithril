@@ -42,7 +42,10 @@ $model = (name, definition) ->
       reset:(attrs={})=>
         @$.id(attrs.id || null)
         for k,v of @columns
-          val = attrs[k]? || v
+          if attrs[k]?
+            val = attrs[k]
+          else
+            val = v
           @$[k](val)
     __fun = (attrs)->
       new super_def(attrs).$
