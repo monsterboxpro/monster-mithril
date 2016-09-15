@@ -106,8 +106,9 @@ class List
     attrs.page   = @$.paginate.page() if @paginate && @$.paginate && @$.paginate.page
     attrs.search = @$.search()        if @search   && @$.search
     attrs.sort   = "#{@$.sort.name()},#{@$.sort.by()}" if @sortable && @$.sort
-    @$.loading = true
-    @Api[@controller][@action] attrs
+    @Api[@controller][@action] attrs, extract: @headers
+  headers:(xhr)=>
+    xhr.responseText
   destroy:(model,opts={})=>
     =>
       name = @table_name.singularize()

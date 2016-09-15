@@ -33,12 +33,14 @@ class Form
   reindex:=>
     switch @action
       when 'new'
-        @Api[@table_name].new @attrs() if @can_pull('new')
+        @Api[@table_name].new @attrs(), extract: @headers if @can_pull('new')
       when 'edit'
-        @Api[@table_name].edit @param('id'), @attrs() if @can_pull('edit')
+        @Api[@table_name].edit @param('id'), @attrs(), extract: @headers if @can_pull('edit')
       else
         if @can_pull()
-          @Api[@table_name][@action] @param('id'), @attrs()
+          @Api[@table_name][@action] @param('id'), @attrs(), extract: @headers
+  headers:(xhr)=>
+    xhr.responseText
   submit:(e)=>
     $stop e
     params = @params()

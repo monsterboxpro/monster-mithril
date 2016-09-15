@@ -41,7 +41,12 @@ class ApiBase
   put    : request_wrap 'PUT'
   delete : request_wrap 'DELETE'
 
-  @_request: (iso_path, method, url, attrs, headers, data, success, error) =>
+  @_request: (iso_path, method, url, headers, data, opts={})=>
+    success = opts.success
+    error   = opts.error
+    extract = opts.extract
+    attrs   = opts.attrs
+
     deferred = m.deferred()
     iso_pathless = (iso_path == undefined)
 
@@ -72,9 +77,21 @@ class ApiBase
         form_data = form_object_to_form_data(data)
         serialize = (value)->
           return value
-        m.request(method: method, url: url, data: form_data, serialize: serialize, config: config).then(ev_success,ev_error)
+        attrs =
+          method    : method
+          url       : url
+          data      : form_data
+          serialize : serialize
+          config    : config
+        m.request(attrs).then(ev_success,ev_error)
       else
-        m.request(method: method, url: url, data: data, config: config).then(ev_success,ev_error)
+        attrs =
+          method : method
+          url    : url
+          data   : data
+          config : config
+        attrs.extract = extract if extract
+        m.request(attrs).then(ev_success,ev_error)
 
     deferred.promise
   _extract_id:(model)=>
@@ -100,19 +117,19 @@ class ApiBase
       only = {index: false, new: false, create: false, show: false, edit: false, update: false, destroy: false}
       only[o] = true for o in options.split(' ')
     @[tn] = {}
-    @[tn].index   = (pms,attrs,suc,err)=>       ApiBase._request "#{tn}/index"  , 'GET'   , @path([tn], ns)                           , attrs, @headers, pms, suc,err if only.index
-    @[tn].new     = (pms,attrs,suc,err)=>       ApiBase._request "#{tn}/new"    , 'GET'   , @path([tn,'new'], ns)                     , attrs, @headers, pms, suc,err if only.new
-    @[tn].create  = (pms,attrs,suc,err)=>       ApiBase._request "#{tn}/create" , 'POST'  , @path([tn], ns)                           , attrs, @headers, pms, suc,err if only.create
-    @[tn].show    = (model,pms,attrs,suc,err)=> ApiBase._request "#{tn}/show"   , 'GET'   , @path([tn,@_extract_id(model)], ns)       , attrs, @headers, pms, suc,err if only.show
-    @[tn].edit    = (model,pms,attrs,suc,err)=> ApiBase._request "#{tn}/edit"   , 'GET'   , @path([tn,@_extract_id(model),'edit'], ns), attrs, @headers, pms, suc,err if only.edit
-    @[tn].update  = (model,pms,attrs,suc,err)=> ApiBase._request "#{tn}/update" , 'PUT'   , @path([tn,@_extract_id(model)], ns)       , attrs, @headers, pms, suc,err if only.update
-    @[tn].destroy = (model,pms,attrs,suc,err)=> ApiBase._request "#{tn}/destroy", 'DELETE', @path([tn,@_extract_id(model)], ns)       , attrs, @headers, pms, suc,err if only.destroy
+    @[tn].index   = (pms,opts)=>       ApiBase._request "#{tn}/index"  , 'GET'   , @path([tn], ns)                           , @headers, pms, opts if only.index
+    @[tn].new     = (pms,opts)=>       ApiBase._request "#{tn}/new"    , 'GET'   , @path([tn,'new'], ns)                     , @headers, pms, opts if only.new
+    @[tn].create  = (pms,opts)=>       ApiBase._request "#{tn}/create" , 'POST'  , @path([tn], ns)                           , @headers, pms, opts if only.create
+    @[tn].show    = (model,pms,opts)=> ApiBase._request "#{tn}/show"   , 'GET'   , @path([tn,@_extract_id(model)], ns)       , @headers, pms, opts if only.show
+    @[tn].edit    = (model,pms,opts)=> ApiBase._request "#{tn}/edit"   , 'GET'   , @path([tn,@_extract_id(model),'edit'], ns), @headers, pms, opts if only.edit
+    @[tn].update  = (model,pms,opts)=> ApiBase._request "#{tn}/update" , 'PUT'   , @path([tn,@_extract_id(model)], ns)       , @headers, pms, opts if only.update
+    @[tn].destroy = (model,pms,opts)=> ApiBase._request "#{tn}/destroy", 'DELETE', @path([tn,@_extract_id(model)], ns)       , @headers, pms, opts if only.destroy
     @_collection tn,action,method,ns for action,method of options.collection
     @_member     tn,action,method,ns for action,method of options.member
   _collection:(tn,a,method,ns)=>
-    @[tn][a] = (params,success,error)=> ApiBase._request "#{tn}/#{a}", method.toUpperCase(), @path([tn, a], ns), {}, @headers, params, success, error
+    @[tn][a] = (params,opts)=> ApiBase._request "#{tn}/#{a}", method.toUpperCase(), @path([tn, a], ns), @headers, params, opts
   _member:(tn,a,method,ns)=>
-    @[tn][a] = (model,params,success,error)=> ApiBase._request "#{tn}/#{a}", method.toUpperCase(), @path([tn, model.id, a], ns), {}, @headers, params, success, error
+    @[tn][a] = (model,params,opts)=> ApiBase._request "#{tn}/#{a}", method.toUpperCase(), @path([tn, model.id, a], ns),  @headers, params, opts
   constructor:()->
     @_resource table_name, options for table_name,options of @resources
 window.ApiBase = ApiBase
