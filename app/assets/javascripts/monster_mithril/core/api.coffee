@@ -98,7 +98,10 @@ class ApiBase
     if typeof model is 'string' || typeof model is 'number'
       model
     else
-      model.id
+      if typeof model.id is 'function'
+        model.id()
+      else
+        model.id
   path:(args...)=>
     namespace = @namespace
     if(args[0] instanceof Array)
