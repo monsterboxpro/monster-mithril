@@ -22,6 +22,7 @@
 class Popup
   pull: false
   blank: false
+  clear: true
   params:=>
     attrs = {}
     attrs[@_controller.singularize()] = @$.model.params()

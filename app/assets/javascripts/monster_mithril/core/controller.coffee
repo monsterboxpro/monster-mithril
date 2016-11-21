@@ -26,6 +26,9 @@ $controller = (name, args..., definition) ->
   app[names[0]][names[1]] ?= {}
   super_def = class extends definition
     constructor:->
+      @clear ||= false
+      if @clear is false
+        app.events = {} 
       @_inject args
       @__fun       = __fun
       @$           = {}
