@@ -40,7 +40,9 @@ class Show
   destroy_success:=>
   reindex:=>
     attrs = @attrs()
-    @Api[@table_name][@action] {id: @param('id')}, attrs
+    @Api[@table_name][@action] {id: @param('id')}, attrs, extract: @headers
+  headers:(xhr)=>
+    xhr.responseText
   _prefix:=>
     path = _.map @scope, (s)=> "#{_.pluralize(s)}/#{@$[s].id}"
     path.join '/'
