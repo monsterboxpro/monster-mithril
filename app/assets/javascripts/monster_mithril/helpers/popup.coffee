@@ -127,7 +127,7 @@ class Popup
         @$on "#{path}/update#err", @error
         @$on "#{path}/edit"      , @edit_success
       else
-        @$on "#{path}/#{@_action}"        , @success
+        @$on "#{path}/#{@_action}"        , @custom_success
         @$on "#{path}/#{@_action}#err"    , @error
         @$on "#{path}/update"             , @success
         @$on "#{path}/update#err"         , @error
