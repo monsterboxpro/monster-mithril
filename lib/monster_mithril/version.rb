@@ -1,3 +1,3 @@
 module MonsterMithril
-  VERSION = "0.1.52"
+  VERSION = "0.1.51"
 end

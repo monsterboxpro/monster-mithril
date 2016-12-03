@@ -119,9 +119,6 @@ class List
           _.destroy @collection, model
   index_success:(data)=>
     @$.loading = false
-    #paginate = headers('X-Pagination')
-    #if paginate
-      #@$.paginate = JSON.parse(paginate)
     name = @collection_name || @table_name
     @$[name] = data
     @collection = @$[name]

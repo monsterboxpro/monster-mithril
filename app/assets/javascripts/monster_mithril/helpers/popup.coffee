@@ -45,7 +45,6 @@ class Popup
   pop:(data)=>
     @$.model.errors {}
     @$.pop(true)
-    @$.title "#{@_action} #{@_controller.singularize()}".titleize()
     @reindex(data)
   reindex:(data)=>
     switch @_action
@@ -56,20 +55,29 @@ class Popup
          if data && data.model && data.model.id
            if @can_pull('edit')
              @Api[@_controller].edit data.model, @attrs()
-           if @title && @title.edit
-              @$.title @title.edit()
-           else
-             @$.title "Edit #{@_controller.singularize()}".titleize()
          else
            if @can_pull('new')
              @Api[@_controller].new @attrs()
-           if @title && @title.new
-            @$.title @title.new()
-           else
-             @$.title "New #{@_controller.singularize()}".titleize()
        else
          if @can_pull()
            @Api[@_controller][@_action] data.model, @attrs()
+    @set_title data
+  set_title:(data)=>
+    title =
+    if @_action is 'form'
+      if data && data.model && data.model.id
+        if @title && @title.edit
+           @title.edit()
+        else
+          "Edit #{@_controller.singularize()}".titleize()
+      else
+        if @title && @title.new
+          @title.new()
+        else
+          "New #{@_controller.singularize()}".titleize()
+    else
+      "#{@_action} #{@_controller.singularize()}".titleize()
+    @$.title title
   cancel:=>
     @$.pop(false)
   submit:(e)=>
