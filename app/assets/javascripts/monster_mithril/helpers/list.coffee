@@ -59,10 +59,10 @@ class List
     @index_success null, @data() if @data
     @$export 'destroy'
     @$.loading = true
-  pop_new:=>
+  pop_new:(model={})=>
     n = "#{@table_name}_form"
     @_check_model n
-    @$[n].model.reset()
+    @$[n].model.reset(model)
     $broadcast "#{@table_name}/new#pop"
   pop_show:(model)=>
     =>
