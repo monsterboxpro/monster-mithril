@@ -58,7 +58,7 @@ class Popup
         if @can_pull('edit')
           @Api[@_controller].edit {id: id}, @attrs()
        when 'form'
-         if model_id
+         if id
            if @can_pull('edit')
              @Api[@_controller].edit {id: id}, @attrs()
          else
