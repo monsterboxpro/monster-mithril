@@ -42,25 +42,31 @@ class Popup
     @$export 'submit',
              'cancel'
     @_register()
-  pop:(data)=>
+  pop:(data={})=>
     @$.model.errors {}
     @$.pop(true)
-    @reindex(data)
+    @reindex(data.model)
   reindex:(data)=>
+    if data
+      model = data
+      id    = data.id
+    else
+      model = @$.model
+      id    = @$.model.id()
     switch @_action
       when 'edit'
         if @can_pull('edit')
-          @Api[@_controller].edit data.model, @attrs()
+          @Api[@_controller].edit {id: id}, @attrs()
        when 'form'
-         if data && data.model && data.model.id
+         if model_id
            if @can_pull('edit')
-             @Api[@_controller].edit data.model, @attrs()
+             @Api[@_controller].edit {id: id}, @attrs()
          else
            if @can_pull('new')
              @Api[@_controller].new @attrs()
        else
          if @can_pull()
-           @Api[@_controller][@_action] data.model, @attrs()
+           @Api[@_controller][@_action] {id: id}, @attrs()
     @set_title data
   set_title:(data)=>
     title =
