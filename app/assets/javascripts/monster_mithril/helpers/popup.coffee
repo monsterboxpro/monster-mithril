@@ -47,8 +47,8 @@ class Popup
     @$.pop(true)
     @reindex(data.model)
   reindex:(data)=>
-    if data
-      model = data
+    if data && data.model
+      model = data.model
       id    = data.id
     else
       model = @$.model
@@ -67,11 +67,11 @@ class Popup
        else
          if @can_pull()
            @Api[@_controller][@_action] {id: id}, @attrs()
-    @set_title data
+    @set_title {id: id}
   set_title:(data)=>
     title =
     if @_action is 'form'
-      if data && data.model && data.model.id
+      if data.id
         if @title && @title.edit
            @title.edit()
         else
