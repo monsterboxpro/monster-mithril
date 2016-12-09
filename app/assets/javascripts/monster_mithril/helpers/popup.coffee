@@ -31,18 +31,22 @@ class Popup
   constructor:(args)->
     name = "#{@_controller}_#{@_action}"
     @$.popup_class = "#{name}_popup"
-    unless args[0][name]
-      console.log '[Popup] arguments:', args[0]
-      throw "[Popup][#{@_controller}/#{@_action}] expected #{name} for args" 
-    throw "[Popup][#{@_controller}/#{@_action}] expects model" unless args[0][name].model
-    throw "[Popup][#{@_controller}/#{@_action}] expects pop"   unless args[0][name].pop
-    throw "[Popup][#{@_controller}/#{@_action}] expects title" unless args[0][name].title
-    @$[key] = val for key,val of args[0][name]
+    @set_args args, name
     @$.data = null
     @$export 'submit',
              'cancel'
     @_register()
+  set_args:(args,name)=>
+    lbl = "[Popup][#{@_controller}/#{@_action}] expected"
+    throw "#{lbl} #{name} for args" unless args[0][name]
+    @$[key] = val for key,val of args[0][name]
+  validate:=>
+    lbl = "[Popup][#{@_controller}/#{@_action}] expects "
+    throw "#{lbl} model" unless @$.model
+    throw "#{lbl} pop"   unless @$.pop
+    throw "#{lbl} title" unless @$.title
   pop:(data={})=>
+    @validate()
     @$.model.errors {}
     @$.pop(true)
     @reindex(data.model)
