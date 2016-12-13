@@ -51,8 +51,8 @@ class Popup
     @$.pop(true)
     @reindex(data.model)
   reindex:(data)=>
-    if data && data.model
-      model = data.model
+    if data
+      model = data
       id    = data.id
     else
       model = @$.model
