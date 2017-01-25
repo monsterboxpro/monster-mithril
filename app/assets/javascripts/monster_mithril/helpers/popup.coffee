@@ -57,20 +57,12 @@ class Popup
     else
       model = @$.model
       id    = @$.model.id()
-    switch @_action
-      when 'edit'
-        if @can_pull('edit')
-          @Api[@_controller].edit {id: id}, @attrs()
-       when 'form'
-         if id
-           if @can_pull('edit')
-             @Api[@_controller].edit {id: id}, @attrs()
-         else
-           if @can_pull('new')
-             @Api[@_controller].new @attrs()
-       else
-         if @can_pull()
-           @Api[@_controller][@_action] {id: id}, @attrs()
+    api = @Api[@_controller]
+    a   = @_action
+    if      @can_pull('edit') && a is 'edit'       then api.edit {id: id}, @attrs()
+    else if @can_pull('edit') && a is 'form' && id then api.edit {id: id}, @attrs()
+    else if @can_pull('new')  && a is 'form'       then api.new @attrs()
+    else if @can_pull()                            then api[@_action] {id: id}, @attrs()
     @set_title {id: id}
   set_title:(data)=>
     title =
