@@ -40,6 +40,7 @@ $controller = (name, args..., definition) ->
       super
     $on: (name,fun)=>
       @_scope() unless @scope
+      fun = @[name.replace(/\//,'_')] unless fun
       $register @scope, name, fun
     _scope:=>
       @scope = @_name + @$store('_UUID')
