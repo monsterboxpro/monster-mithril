@@ -8,30 +8,18 @@ class Show
     @table_name = @_controller unless @table_name
     @_register()
     @reindex() if @pull
+
+    @$.pop = {}
     if typeof(@popups) is 'object'
-      @$.pop = {}
       for name in @popups
-        @$.pop[name] = @pop_custom(name)
+        @$pop "#{@_controller}/#{name}"
     else if @popups is true
-      name = @collection_name || @table_name
-      @$.pop =
-        edit: @pop_edit
+      @$pop "#{@_controller}/form"
+
     @$.destroy = @destroy
-  pop_new:=>
-    @$["#{@table_name}_form"].model.reset()
-    $broadcast "#{@table_name}/new#pop"
-  pop_edit:(model)=>
-    =>
-      @$["#{@table_name}_form"].model.reset id: @param('id')
-      $broadcast "#{@table_name}/edit#pop", model: model
-  pop_custom:(name)=>
-    (model)=>
-      @$["#{@table_name}_#{name}"].model.reset id: @param('id')
-      $broadcast "#{@table_name}/#{name}#pop", model: model
   _register:=>
     path = @table_name
     @$on "#{path}/show"   , @show_success
-    @$on "#{path}/update" , @update_success
     @$on "#{path}/destroy", @destroy_success
   show_success:(data)=>
     @$.model = data

@@ -40,8 +40,61 @@ $controller = (name, args..., definition) ->
       super
     $on: (name,fun)=>
       @_scope() unless @scope
-      fun = @[name.replace(/\//,'_')] unless fun
+      fun = @["#{name.replace(/\//,'_')}_success"] unless fun
       $register @scope, name, fun
+    $pop: (name,opts={})=>
+      vals    = name.split('/')
+      ctrl    = vals[0]
+      action  = vals[1]
+      form    = action in ['new','edit','form']
+      _action = if form then 'form' else action
+      model   = if form then ctrl else "#{ctrl.singularize()}_#{action}"
+      model   = model.classify()
+
+      key = "#{ctrl}_#{_action}"
+      @$[key]       = opts
+      @$[key].pop   = m.prop false
+      @$[key].title = m.prop ''
+      @$[key].model = $model(model)
+
+      pop_action = (model)=>
+        =>
+          @_check_model key
+          @$[key].model.reset()
+          $broadcast "#{ctrl}/#{_action}#pop", model: model
+          return false
+
+      ctx = @$.pop[ctrl]
+      if ctrl is @_controller
+        if form
+          @$.pop.new  = pop_action
+          @$.pop.edit = pop_action
+          @$on "#{ctrl}/create", @create_success
+          @$on "#{ctrl}/update", @update_success
+        else
+          @$.pop[action] = pop_action
+          @$on "#{ctrl}/#{action}", @["#{action}_success"]
+      else
+        if form
+          @$.pop[ctrl] ||= {}
+          @$.pop[ctrl].new  = pop_action
+          @$.pop[ctrl].edit = pop_action
+          #@["#{ctrl}_create_success"] = (data)=> _.create @$.model[ctrl], data
+          #@["#{ctrl}_update_success"] = (data)=> _.update @$.model[ctrl], data
+          @$on "#{ctrl}/create"
+          @$on "#{ctrl}/update"
+        else
+          @$.pop[ctrl][action] = pop_action
+          @$on "#{ctrl}/#{action}"
+
+    _check_model:(name)=>
+      ctrl = "#{@_controller}/#{@_action}"
+      unless @$[name]
+        console.log "[List][#{ctrl}] @$", @$
+        throw "[List][#{ctrl}] pop action expects #{name} to defined on scope"
+      unless @$[name].model
+        console.log "[List][#{ctrl}] @$.#{name}", @$[name]
+        throw "[List][#{ctrl}] pop action expects a model for #{name} to defined on scope" 
     _scope:=>
       @scope = @_name + @$store('_UUID')
     $export: (args...)=>

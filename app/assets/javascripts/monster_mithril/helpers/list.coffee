@@ -19,8 +19,8 @@ class List
   attrs: => {}
   constructor:->
     @collection = []
-    @action ||= @_action
     @controller ||= @_controller
+    @action     ||= @_action
     unless @table_name
       @table_name =
       if @_action is 'index'
@@ -28,21 +28,14 @@ class List
       else
         @_action
     @_register()
+
+    @$.pop = {}
     if typeof(@popups) is 'object'
-      @$.pop = {}
       for name in @popups
-        switch name
-          when 'new'  then @$.pop.new  = @pop_new
-          when 'edit' then @$.pop.edit = @pop_edit
-          when 'show' then @$.pop.show = @pop_show
-          else
-            @$.pop[name] = @pop_custom(name)
+        @$pop "#{@_controller}/#{name}"
     else if @popups is true
-      name = @collection_name || @table_name
-      @$.pop =
-        new:  @pop_new
-        show: @pop_show
-        edit: @pop_edit
+      @$pop "#{@_controller}/form"
+
     dreindex = debounce @reindex, 100
     if @paginate
       page = parseInt @param('page')
@@ -59,37 +52,6 @@ class List
     @index_success null, @data() if @data
     @$export 'destroy'
     @$.loading = true
-  pop_new:(model={})=>
-    n = "#{@table_name}_form"
-    @_check_model n
-    @$[n].model.reset(model)
-    $broadcast "#{@table_name}/new#pop"
-  pop_show:(model)=>
-    =>
-      n = "#{@_controller}_show"
-      @_check_model n
-      @$[n].model.reset()
-      $broadcast "#{@table_name}/show#pop", model: model
-  pop_edit:(model)=>
-    =>
-      n = "#{@table_name}_form"
-      @_check_model n
-      @$[n].model.reset()
-      $broadcast "#{@table_name}/edit#pop", model: model
-  pop_custom:(name)=>
-    (model)=>
-      n = "#{@_controller}_#{name}"
-      @_check_model n
-      @$[n].model.reset()
-      $broadcast "#{@_controller}/#{name}#pop", model: model
-  _check_model:(name)=>
-    ctrl = "#{@_controller}/#{@_action}"
-    unless @$[name]
-      console.log "[List][#{ctrl}] @$", @$
-      throw "[List][#{ctrl}] pop action expects #{name} to defined on scope"
-    unless @$[name].model
-      console.log "[List][#{ctrl}] @$.#{name}", @$[name]
-      throw "[List][#{ctrl}] pop action expects a model for #{name} to defined on scope" 
   update_search:(val,old)=>
     if old != val
       if @search is 'location'
@@ -132,8 +94,6 @@ class List
     name = @collection_name || @table_name
     path = name
 
-    @$on "#{path}/create" , @create_success
-    @$on "#{path}/update" , @update_success
     @$on "#{path}/destroy", @destroy_success
 
 window.List = List
