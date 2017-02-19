@@ -55,17 +55,6 @@ class List
     @index_success null, @data() if @data
     @$export 'destroy'
     @$.loading = true
-  update_search:(val,old)=>
-    if old != val
-      if @search is 'location'
-        if val != ''
-          @$location.search 'search', val
-        else
-          @$location.search 'search', null
-      if @$.paginate
-        @$.paginate.page 1
-        @$location.search 'page', null
-      @reindex() if @pull
   reindex:=>
     attrs = @attrs()
     attrs.page   = @$.paginate.page() if @paginate && @$.paginate && @$.paginate.page
