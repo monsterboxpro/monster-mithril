@@ -41,11 +41,11 @@ class List
       page = parseInt @param('page')
       @$.paginate =
         page: $watch m.prop(page ||  1), dreindex
-    if @sortable
-      val = @sortable.split(',')
-      @$.sort =
-        name: $watch m.prop(@param('sort') || val[0]), dreindex
-        by:   $watch m.prop(@param('by')   || val[1]), dreindex
+    #if @sortable
+      #val = @sortable.split(',')
+      #@$.sort =
+        #name: $watch m.prop(@param('sort') || val[0]), dreindex
+        #by:   $watch m.prop(@param('by')   || val[1]), dreindex
     if @search
       @$.search = $watch m.prop(@param('q')  || ''), dreindex
     @reindex() if @pull
