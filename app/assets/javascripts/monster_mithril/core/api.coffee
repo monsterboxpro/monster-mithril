@@ -2,6 +2,9 @@ parameter_name = (root)->
   name = root[0]
   name += '['  + root.slice(1).join('][') + ']' if root.length > 1
   name
+
+window.File ||= {}
+
 has_attached_file = (value)->
   result = false
   if typeof value == 'object' && !(value instanceof File)
