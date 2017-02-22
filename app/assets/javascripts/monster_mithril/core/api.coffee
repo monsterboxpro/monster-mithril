@@ -3,6 +3,10 @@ parameter_name = (root)->
   name += '['  + root.slice(1).join('][') + ']' if root.length > 1
   name
 
+unless File
+  class window.File
+    constructor:->
+
 has_attached_file = (value)->
   result = false
   if typeof value == 'object' && !(File && value instanceof File.constructor)
