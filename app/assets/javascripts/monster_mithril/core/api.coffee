@@ -3,25 +3,25 @@ parameter_name = (root)->
   name += '['  + root.slice(1).join('][') + ']' if root.length > 1
   name
 
-if typeof File != 'undefined'
+if typeof File is 'undefined'
   class window.File
     constructor:->
 
 has_attached_file = (value)->
   result = false
-  if typeof value == 'object' && !(File && value instanceof File.constructor)
+  if typeof value == 'object' && !(value instanceof File.constructor)
     for own k,v of value
       result |= has_attached_file v
   else if typeof value == 'array'
     for vv in v
       result |= has_attached_file vv
   else
-    result |= File && value instanceof File.constructor
+    result |= value instanceof File.constructor
   return result
 
 form_object_to_form_data = (value,fd=null,root=[]) ->
   fd = new FormData() unless fd
-  if typeof value is 'object' && !(File && value instanceof File.constructor)
+  if typeof value is 'object' && !(value instanceof File.constructor)
     for own k,v of value
       form_object_to_form_data v, fd, root.concat [k]
   else if typeof value is 'array'
