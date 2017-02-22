@@ -3,7 +3,7 @@ parameter_name = (root)->
   name += '['  + root.slice(1).join('][') + ']' if root.length > 1
   name
 
-unless File
+if typeof File != 'undefined'
   class window.File
     constructor:->
 
