@@ -77,7 +77,6 @@ class ApiBase
       ->
         data
     else
-      console.log 'haf0', data
       if has_attached_file(data)
         form_data = form_object_to_form_data(data)
         serialize = (value)->
