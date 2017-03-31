@@ -9,19 +9,19 @@ if typeof File is 'undefined'
 
 has_attached_file = (value)->
   result = false
-  if typeof value == 'object' && !(value instanceof File.constructor)
+  if typeof value is 'object' && !(value instanceof File)
     for own k,v of value
       result |= has_attached_file v
-  else if typeof value == 'array'
+  else if typeof value is 'array'
     for vv in v
       result |= has_attached_file vv
   else
-    result |= value instanceof File.constructor
+    result |= value instanceof File
   return result
 
 form_object_to_form_data = (value,fd=null,root=[]) ->
   fd = new FormData() unless fd
-  if typeof value is 'object' && !(value instanceof File.constructor)
+  if typeof value is 'object' && !(value instanceof File)
     for own k,v of value
       form_object_to_form_data v, fd, root.concat [k]
   else if typeof value is 'array'
@@ -77,7 +77,7 @@ class ApiBase
       ->
         data
     else
-      #console.log has_attached_file(data), data
+      console.log 'haf0', data
       if has_attached_file(data)
         form_data = form_object_to_form_data(data)
         serialize = (value)->
