@@ -16,6 +16,7 @@ class List
   paginate: false
   search  : false
   controller: null
+  debounce_time: 100
   attrs: => {}
   constructor:->
     @collection = []
@@ -41,7 +42,7 @@ class List
     else if @popups is true
       @$pop "#{@_controller}/form"
 
-    dreindex = debounce @reindex, 100
+    dreindex = debounce @reindex, @debounce_time
     @check_paginate dreindex
     @check_sortable dreindex
     @check_search   dreindex
