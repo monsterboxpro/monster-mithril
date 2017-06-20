@@ -28,7 +28,12 @@ class List
       else
         @_action
     @_register()
-
+    @set_pop()
+    @reindex() if @pull
+    @index_success null, @data() if @data
+    @$export 'destroy'
+    @$.loading = true
+  set_pop:=>
     @$.pop = {}
     if typeof(@popups) is 'object'
       for name in @popups
@@ -37,24 +42,27 @@ class List
       @$pop "#{@_controller}/form"
 
     dreindex = debounce @reindex, 100
-    if @paginate
-      page = parseInt @param('page')
-      @$.paginate =
-        page: $watch m.prop(page ||  1), dreindex
-    if @sortable
-      val = @sortable.split(',')
-      #@$.sort =
-        #name: $watch m.prop(@param('sort') || val[0]), dreindex
-        #by:   $watch m.prop(@param('by')   || val[1]), dreindex
-      @$.sort =
-        name: m.prop(@param('sort') || val[0])
-        by:   m.prop(@param('by')   || val[1])
-    if @search
-      @$.search = $watch m.prop(@param('q')  || ''), dreindex
-    @reindex() if @pull
-    @index_success null, @data() if @data
-    @$export 'destroy'
-    @$.loading = true
+    @check_paginate dreindex
+    @check_sortable dreindex
+    @check_search   dreindex
+
+  check_paginate:(dreindex)=>
+    return unless @paginate
+    page = parseInt @param('page')
+    @$.paginate =
+      page: $watch m.prop(page ||  1), dreindex
+  check_sortable:(dreindex)=>
+    return unless @sortable
+    val = @sortable.split(',')
+    #@$.sort =
+      #name: $watch m.prop(@param('sort') || val[0]), dreindex
+      #by:   $watch m.prop(@param('by')   || val[1]), dreindex
+    @$.sort =
+      name: m.prop(@param('sort') || val[0])
+      by:   m.prop(@param('by')   || val[1])
+  check_search:(dreindex)=>
+    return unless @search
+    @$.search = $watch m.prop(@param('q')  || ''), dreindex
   reindex:=>
     attrs = @attrs()
     attrs.page   = @$.paginate.page() if @paginate && @$.paginate && @$.paginate.page
