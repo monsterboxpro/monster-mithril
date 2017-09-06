@@ -81,6 +81,7 @@ class List
         if opts.now
           _.destroy @collection, model
   index_success:(data)=>
+    $storage.reset()
     @$.loading = false
     name = @collection_name || @table_name
     @$[name] = data

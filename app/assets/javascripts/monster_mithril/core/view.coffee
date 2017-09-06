@@ -8,10 +8,6 @@ $view = (name, definition) ->
     param:(name)->
       m.route.param name
   __fun = (ctrl)->
-    in_stack = _.any $storage.stack, (item)->
-      item == name
-    if not in_stack
-      new $storage(name) #spin up a storage for this controller-less view
     klass = new super_def(ctrl)
     content = klass.render()
     if klass.layout
@@ -19,7 +15,6 @@ $view = (name, definition) ->
       klass.layout = 'application' if klass.layout is true
       document.title = klass.title() if klass.title
       content = $layout klass.$, content, layout: klass.layout
-    $storage.pop_key()
     content
   app[names[0]][names[1]].view = __fun
 window.$view = $view

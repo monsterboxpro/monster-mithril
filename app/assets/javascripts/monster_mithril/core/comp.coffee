@@ -18,7 +18,6 @@ $component = (name, args..., definition) ->
       @_controller = names[0]
       @_action     = names[1]
       @Api = new app.services.Api()
-      @$store = new $storage("shared/#{name}").$store
       super
     $on: (name,fun)=>
       $register @scope(), name, fun

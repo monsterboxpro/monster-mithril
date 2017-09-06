@@ -36,7 +36,6 @@ $controller = (name, args..., definition) ->
       @_controller = names[0]
       @_action     = names[1]
       @Api = new app.services.Api()
-      @$store = new $storage(name).$store
       super
     $on: (name,fun)=>
       @_scope() unless @scope
@@ -96,7 +95,7 @@ $controller = (name, args..., definition) ->
         console.log "[List][#{ctrl}] @$.#{name}", @$[name]
         throw "[List][#{ctrl}] pop action expects a model for #{name} to defined on scope" 
     _scope:=>
-      @scope = @_name + @$store('_UUID')
+      @scope = @_name + _.generate_UUID()
     $export: (args...)=>
       @$[arg] = @[arg] for arg in args
     param:(name)->
