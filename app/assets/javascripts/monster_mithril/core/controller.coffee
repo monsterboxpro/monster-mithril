@@ -37,10 +37,9 @@ $controller = (name, args..., definition) ->
       @_action     = names[1]
       @Api = new app.services.Api()
       super
-    $on: (name,fun)=>
-      @_scope() unless @scope
+    $on: (name,fun,opts={})=>
       fun = @["#{name.replace(/\//,'_')}_success"] unless fun
-      $register @scope, name, fun
+      $register @_name, name, fun
     $pop: (name,opts={})=>
       vals    = name.split('/')
       ctrl    = vals[0]
@@ -94,8 +93,6 @@ $controller = (name, args..., definition) ->
       unless @$[name].model
         console.log "[List][#{ctrl}] @$.#{name}", @$[name]
         throw "[List][#{ctrl}] pop action expects a model for #{name} to defined on scope" 
-    _scope:=>
-      @scope = @_name + _.generate_UUID()
     $export: (args...)=>
       @$[arg] = @[arg] for arg in args
     param:(name)->
