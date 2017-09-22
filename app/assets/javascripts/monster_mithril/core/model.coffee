@@ -19,6 +19,7 @@ $model = (name, definition) ->
           params: @params
           reset : @reset
           fill  : @reset
+          uuid  : _.generate_UUID()
           errors: m.prop({})
         @$.id = m.prop(attrs.id || null)
 
